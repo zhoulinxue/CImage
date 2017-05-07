@@ -6,6 +6,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.widget.ImageView;
 
+import zhx.cimage.callback.ImageLoadCallBack;
+
 /**
  * Created by zhouxue on 2017/4/20.
  * QQ 515278502
@@ -39,6 +41,7 @@ public class CImage {
      * @return CImage
      */
     public static CImage in(Activity activity){
+
 
         return getInstance();
     }
@@ -99,7 +102,7 @@ public class CImage {
         return getInstance();
     }
 
-    public static  CImage onloadLisenter(){
+    public static  CImage onloadLisenter(ImageLoadCallBack callBack){
         return getInstance();
     }
 

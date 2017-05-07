@@ -1,4 +1,4 @@
-package zhx.cimage.Exception;
+package zhx.cimage.exception;
 
 /**
  * Created by zhouxue on 2017/4/20.
