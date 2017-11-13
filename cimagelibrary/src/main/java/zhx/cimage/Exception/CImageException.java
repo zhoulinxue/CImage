@@ -28,6 +28,10 @@ public class CImageException {
         return cause;
     }
 
+    public static void throwNullValus() {
+        throw new RuntimeException("bitmap can not be null");
+    }
+
     /** Presents type of fail while image loading */
     public static enum FailType {
         /** Input/output error. Can be caused by network communication fail or error while caching image on file system. */
@@ -47,4 +51,7 @@ public class CImageException {
         /** Unknown error was occurred while loading image */
         UNKNOWN
     }
+    public static void throwNullKey(){
+        throw  new RuntimeException("key/url can not be null");
+    };
 }

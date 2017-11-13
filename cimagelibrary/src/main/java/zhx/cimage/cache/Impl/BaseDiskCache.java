@@ -1,181 +1,109 @@
-/*******************************************************************************
- * Copyright 2011-2014 Sergey Tarasevich
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
 package zhx.cimage.cache.Impl;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+import android.util.Log;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import zhx.cimage.cache.DiskCache;
-import zhx.cimage.cache.FileNameGenerator;
+import zhx.cimage.cache.FileMaster;
 import zhx.cimage.utils.IoUtils;
+import zhx.cimage.utils.MD5Util;
 
 /**
- * Base disk cache.
+ * Created by ${zhouxue} on 17/10/4 14: 13.
+ * QQ:515278502
  */
-public abstract class BaseDiskCache implements DiskCache {
-	/** {@value */
-	public static final int DEFAULT_BUFFER_SIZE = 32 * 1024; // 32 Kb
-	/** {@value */
-	public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
-	/** {@value */
-	public static final int DEFAULT_COMPRESS_QUALITY = 100;
 
-	private static final String ERROR_ARG_NULL = " argument must be not null";
-	private static final String TEMP_IMAGE_POSTFIX = ".tmp";
+public class BaseDiskCache   implements DiskCache, FileMaster{
 
-	protected final File cacheDir;
-	protected final File reserveCacheDir;
+    private int mCacheSize;
 
-	protected final FileNameGenerator fileNameGenerator;
+    public BaseDiskCache(int mCacheSize, String mCacheDir) {
+        this.mCacheSize = mCacheSize;
+        this.mCacheDir = mCacheDir;
+    }
 
-	protected int bufferSize = DEFAULT_BUFFER_SIZE;
+    @Override
+    public Bitmap get(String url) {
+        String name=encodefileName(url);
+        String path=mCacheDir+File.separator+name;
+        Log.e("CImage","本地文件名:   "+name+" 本地路径:   "+path);
+        return BitmapFactory.decodeFile(path);
+    }
 
-	protected Bitmap.CompressFormat compressFormat = DEFAULT_COMPRESS_FORMAT;
-	protected int compressQuality = DEFAULT_COMPRESS_QUALITY;
+    @Override
+    public void put(String url, Bitmap bitmap) {
+        Log.e("CImage","网络地址"+url);
+        if(isexist(url)){
+            Log.i("CImage","缓存文件已存在"+encodefileName(url));
+            return;
+        }
+        File panrent=null;
+        if(!TextUtils.isEmpty(mCacheDir)){
+            panrent=new File(mCacheDir);
+            if(!panrent.exists()){
+                panrent.mkdirs();
+            }
+        }
+        FileOutputStream stream=null;
+        try {
+            File file=new File(panrent+File.separator+encodefileName(url));
+             stream=new FileOutputStream(file.getAbsolutePath());
+             Log.i("CImage",panrent+File.separator+encodefileName(url)+"缓存地址");
+             bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            IoUtils.closeSilently(stream);
+        }
+    }
 
-	/** @param cacheDir Directory for file caching */
-	public BaseDiskCache(File cacheDir) {
-		this(cacheDir, null);
-	}
+    @Override
+    public void clear() {
+        File file=new File(mCacheDir);
+        if(file.exists()&&file.isDirectory()){
+            for (File child:file.listFiles()){
+                child.delete();
+            }
+        }
+    }
+    protected String mCacheDir;
+    @Override
+    public boolean isexist(String url) {
+        String path=encodefileName(url);
+        if(TextUtils.isEmpty(path)){
+            return false;
+        }
+        File file=new File(mCacheDir,path);
+        return file.exists();
+    }
 
-	/**
-	 * @param cacheDir        Directory for file caching
-	 * @param reserveCacheDir null-ok; Reserve directory for file caching. It's used when the primary directory isn't available.
-	 */
-	public BaseDiskCache(File cacheDir, File reserveCacheDir) {
-		this(cacheDir, reserveCacheDir, new HashCodeFileNameGenerator());
-	}
+    @Override
+    public long fileSize(String path) {
+        if(TextUtils.isEmpty(path)){
+            return 0;
+        }
+        File file=new File(path);
+        if(file.exists()) {
+            return file.length();
+        }
+        return 0;
+    }
 
-	/**
-	 * @param cacheDir          Directory for file caching
-	 */
-	public BaseDiskCache(File cacheDir, File reserveCacheDir, FileNameGenerator fileNameGenerator) {
-		if (cacheDir == null) {
-			throw new IllegalArgumentException("cacheDir" + ERROR_ARG_NULL);
-		}
-		if (fileNameGenerator == null) {
-			throw new IllegalArgumentException("fileNameGenerator" + ERROR_ARG_NULL);
-		}
+    @Override
+    public String encodefileName(String url) {
+        return  MD5Util.encrypt(url);
+    }
 
-		this.cacheDir = cacheDir;
-		this.reserveCacheDir = reserveCacheDir;
-		this.fileNameGenerator = fileNameGenerator;
-	}
+    public String getCacheDir() {
+        return mCacheDir;
+    }
 
-	@Override
-	public File getDirectory() {
-		return cacheDir;
-	}
-
-	@Override
-	public File get(String imageUri) {
-		return getFile(imageUri);
-	}
-
-	@Override
-	public boolean save(String imageUri, InputStream imageStream, IoUtils.CopyListener listener) throws IOException {
-		File imageFile = getFile(imageUri);
-		File tmpFile = new File(imageFile.getAbsolutePath() + TEMP_IMAGE_POSTFIX);
-		boolean loaded = false;
-		try {
-			OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpFile), bufferSize);
-			try {
-				loaded = IoUtils.copyStream(imageStream, os, listener, bufferSize);
-			} finally {
-				IoUtils.closeSilently(os);
-			}
-		} finally {
-			if (loaded && !tmpFile.renameTo(imageFile)) {
-				loaded = false;
-			}
-			if (!loaded) {
-				tmpFile.delete();
-			}
-		}
-		return loaded;
-	}
-
-	@Override
-	public boolean save(String imageUri, Bitmap bitmap) throws IOException {
-		File imageFile = getFile(imageUri);
-		File tmpFile = new File(imageFile.getAbsolutePath() + TEMP_IMAGE_POSTFIX);
-		OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpFile), bufferSize);
-		boolean savedSuccessfully = false;
-		try {
-			savedSuccessfully = bitmap.compress(compressFormat, compressQuality, os);
-		} finally {
-			IoUtils.closeSilently(os);
-			if (savedSuccessfully && !tmpFile.renameTo(imageFile)) {
-				savedSuccessfully = false;
-			}
-			if (!savedSuccessfully) {
-				tmpFile.delete();
-			}
-		}
-		bitmap.recycle();
-		return savedSuccessfully;
-	}
-
-	@Override
-	public boolean remove(String imageUri) {
-		return getFile(imageUri).delete();
-	}
-
-	@Override
-	public void close() {
-		// Nothing to do
-	}
-
-	@Override
-	public void clear() {
-		File[] files = cacheDir.listFiles();
-		if (files != null) {
-			for (File f : files) {
-				f.delete();
-			}
-		}
-	}
-
-	/** Returns file object (not null) for incoming image URI. File object can reference to non-existing file. */
-	protected File getFile(String imageUri) {
-		String fileName = fileNameGenerator.generate(imageUri);
-		File dir = cacheDir;
-		if (!cacheDir.exists() && !cacheDir.mkdirs()) {
-			if (reserveCacheDir != null && (reserveCacheDir.exists() || reserveCacheDir.mkdirs())) {
-				dir = reserveCacheDir;
-			}
-		}
-		return new File(dir, fileName);
-	}
-
-	public void setBufferSize(int bufferSize) {
-		this.bufferSize = bufferSize;
-	}
-
-	public void setCompressFormat(Bitmap.CompressFormat compressFormat) {
-		this.compressFormat = compressFormat;
-	}
-
-	public void setCompressQuality(int compressQuality) {
-		this.compressQuality = compressQuality;
-	}
+    public void setCacheDir(String mCacheDir) {
+        this.mCacheDir = mCacheDir;
+    }
 }

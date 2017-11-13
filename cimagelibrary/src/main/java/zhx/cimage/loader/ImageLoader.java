@@ -20,26 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-/**
- * Provides retrieving of {@link InputStream} of image by URI.<br />
- * Implementations have to be thread-safe.
- *
- * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
- * @since 1.4.0
- */
+
 public interface ImageLoader {
-	/**
-	 * Retrieves {@link InputStream} of image by URI.
-	 *
-	 * @param imageUri Image URI
-	 * @param extra
-	 * @return {@link InputStream} of image
-	 * @throws IOException                   if some I/O error occurs during getting image stream
-	 * @throws UnsupportedOperationException if image URI has unsupported scheme(protocol)
-	 */
+
 	InputStream getStream(String imageUri, Object extra) throws IOException;
 
-	/** Represents supported schemes(protocols) of URI. Provides convenient methods for work with schemes and URIs. */
 	public enum Scheme {
 		HTTP("http"), HTTPS("https"), FILE("file"), CONTENT("content"), ASSETS("assets"), DRAWABLE("drawable"), UNKNOWN("");
 
@@ -51,12 +36,6 @@ public interface ImageLoader {
 			uriPrefix = scheme + "://";
 		}
 
-		/**
-		 * Defines scheme of incoming URI
-		 *
-		 * @param uri URI for scheme detection
-		 * @return Scheme of incoming URI
-		 */
 		public static Scheme ofUri(String uri) {
 			if (uri != null) {
 				for (Scheme s : values()) {
@@ -72,12 +51,11 @@ public interface ImageLoader {
 			return uri.toLowerCase(Locale.US).startsWith(uriPrefix);
 		}
 
-		/** Appends scheme to incoming path */
+
 		public String wrap(String path) {
 			return uriPrefix + path;
 		}
 
-		/** Removed scheme part ("scheme://") from incoming URI */
 		public String crop(String uri) {
 			if (!belongsTo(uri)) {
 				throw new IllegalArgumentException(String.format("URI [%1$s] doesn't have expected scheme [%2$s]", uri, scheme));

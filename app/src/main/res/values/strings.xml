@@ -1,3 +1,84 @@
 <resources>
     <string name="app_name">CImage</string>
+    <string-array name="pic">
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+        <item>http://scimg.jb51.net/allimg/150624/14-150624143232592.jpg</item>
+        <item>http://www.wmgm.org/uploads/allimg/130114/6-130114140P5Y0.jpg</item>
+        <item>http://bizhi.sogou.com/detail/info/488716/1164513</item>
+
+
+
+
+
+
+    </string-array>
 </resources>

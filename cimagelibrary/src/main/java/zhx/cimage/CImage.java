@@ -1,12 +1,12 @@
 package zhx.cimage;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.Fragment;
-import android.content.Context;
-import android.widget.ImageView;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import zhx.cimage.callback.ImageLoadCallBack;
+import zhx.cimage.cache.CacheConfig;
+import zhx.cimage.core.BaseUrlParser;
+import zhx.cimage.core.UrlParser;
+import zhx.cimage.displayer.DisPlayer;
 
 /**
  * Created by zhouxue on 2017/4/20.
@@ -18,93 +18,37 @@ import zhx.cimage.callback.ImageLoadCallBack;
 public class CImage {
     private static  String TAG=CImage.class.getSimpleName();
     private static  CImage mCImage;
-    private static CImage getInstance(){
+    public static boolean isDebug=true;
+    private static CacheConfig cacheConfig;
+
+    public static void init(CacheConfig cacheConfig){
         if(mCImage==null){
-            mCImage=new CImage();
+            mCImage=new CImage(cacheConfig);
         }
-        return mCImage;
     }
 
     /**
-     *
-     * @param context 上下文
-     * @return CImage
-     */
-    public static CImage in(Context context){
-
-        return getInstance();
-    }
-
-    /**
-     *
-     * @param activity   in activity/在activity 中使用
-     * @return CImage
-     */
-    public static CImage in(Activity activity){
-
-
-        return getInstance();
-    }
-
-    /**
-     *
-     * @param fragment in fragment/在fragemnt 中使用
-     * @return CImage
-     */
-
-    public static CImage in(Fragment fragment){
-
-        return getInstance();
-    }
-
-    /**
-     *
-     * @param fragment in  android.support.v4.app.Fragment / 在 v4 包中使用
-     * @return CImage
-     */
-    public static CImage in(android.support.v4.app.Fragment fragment){
-
-        return getInstance();
-    }
-
-    /**
-     *
-     * @param url  load url /下载地址(http:  file:  data/data)
+     * 下载界面
+     * @param url
      * @return
      */
-    public static CImage load(String url){
-
-        return  getInstance();
+    public static UrlParser load(String url){
+        if(cacheConfig==null){
+            throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
+        }
+      return new BaseUrlParser(url,cacheConfig);
     }
 
-    /**
-     *
-     * @param src  local src /本地资源 (R.drawable.xx  ; R.mipmap.xx)
-     * @return
-     */
-    public static CImage load(int  src){
-
-        return  getInstance();
+    public CImage(CacheConfig cacheConfig) {
+        this.cacheConfig = cacheConfig;
     }
 
-    /**
-     *
-     * @param imageView  imagView
-     * @return
-     */
-
-    public static CImage into(ImageView imageView){
-        return getInstance();
+    public CacheConfig getCacheConfig() {
+        return cacheConfig;
     }
 
-    public static  CImage withScalType(ImageView.ScaleType scaleType){
-
-        return getInstance();
+    public void setCacheConfig(CacheConfig cacheConfig) {
+        this.cacheConfig = cacheConfig;
     }
-
-    public static  CImage onloadLisenter(ImageLoadCallBack callBack){
-        return getInstance();
-    }
-
 
 }

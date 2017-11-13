@@ -1,73 +1,39 @@
-/*******************************************************************************
- * Copyright 2011-2014 Sergey Tarasevich
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
 package zhx.cimage.cache.Impl;
 
 import android.graphics.Bitmap;
+import android.util.LruCache;
 
-import java.lang.ref.Reference;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
-import zhx.cimage.cache.MemoryCache;
+import zhx.cimage.cache.ImageCache;
 
 /**
- * Base memory cache. Implements common functionality for memory cache. Provides object references (
+ * Created by ${zhouxue} on 17/10/4 17: 59.
+ * QQ:515278502
+ * 内存缓存类
  */
-public abstract class BaseMemoryCache implements MemoryCache {
+public class BaseMemoryCache implements ImageCache {
+    private int mCacheSize;
+    LruCache<String,Bitmap> bitmapLruCache;
 
-	/** Stores not strong references to objects */
-	private final Map<String, Reference<Bitmap>> softMap = Collections.synchronizedMap(new HashMap<String, Reference<Bitmap>>());
+    public BaseMemoryCache(int mCacheSize) {
+        this.mCacheSize = mCacheSize;
+        bitmapLruCache=new LruCache<String,Bitmap>(mCacheSize);
+    }
 
-	@Override
-	public Bitmap get(String key) {
-		Bitmap result = null;
-		Reference<Bitmap> reference = softMap.get(key);
-		if (reference != null) {
-			result = reference.get();
-		}
-		return result;
-	}
+    @Override
+    public Bitmap get(String url) {
+        synchronized (this) {
+            return bitmapLruCache.get(url);
+        }
+    }
 
-	@Override
-	public boolean put(String key, Bitmap value) {
-		softMap.put(key, createReference(value));
-		return true;
-	}
+    @Override
+    public void put(String url, Bitmap bitmap) {
+        bitmapLruCache.put(url,bitmap);
+    }
 
-	@Override
-	public Bitmap remove(String key) {
-		Reference<Bitmap> bmpRef = softMap.remove(key);
-		return bmpRef == null ? null : bmpRef.get();
-	}
-
-	@Override
-	public Collection<String> keys() {
-		synchronized (softMap) {
-			return new HashSet<String>(softMap.keySet());
-		}
-	}
-
-	@Override
-	public void clear() {
-		softMap.clear();
-	}
-
-	/** Creates {@linkplain Reference not strong} reference of value */
-	protected abstract Reference<Bitmap> createReference(Bitmap value);
+    @Override
+    public void clear() {
+        bitmapLruCache.evictAll();
+    }
 }
+
