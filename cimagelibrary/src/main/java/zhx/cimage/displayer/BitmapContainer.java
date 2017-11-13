@@ -29,6 +29,7 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
     private String url;
     private ImageLoadCallBack callBack;
     private Context mContext;
+
     private DisPlayer disPlayer;
     private CacheConfig cacheConfig;
     private Bitmap bitmap;
