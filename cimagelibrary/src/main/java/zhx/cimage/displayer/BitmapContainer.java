@@ -111,6 +111,8 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
             }
             if(imageView.getTag().equals(url)) {
                 disPlayer.display(imageView, bitmap);
+            }else {
+                imageView.setImageBitmap(null);
             }
         }
     }
