@@ -29,11 +29,8 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
     private String url;
     private ImageLoadCallBack callBack;
     private Context mContext;
-
     private DisPlayer disPlayer;
     private CacheConfig cacheConfig;
-    private Bitmap bitmap;
-    private ReentrantLock loadFromUriLock;
 
 
     public BitmapContainer(ImageView imageView, String url, CacheConfig cacheConfig) {
@@ -41,7 +38,6 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
         this.url = url;
         this.cacheConfig = cacheConfig;
         mContext=imageView.getContext();
-        loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url);
     }
 
     public BitmapContainer setCallBack(ImageLoadCallBack callBack) {
@@ -60,43 +56,46 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
      * 开始加载...
      */
     public void end(String...param){
-        execute(url,param[0]);
+        ReentrantLock loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url);
+        if(loadFromUriLock.isLocked()) {
+            Log.e("loading...wait");
+        }
+         execute(url,param[0]);
     }
 
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        bitmap= cacheConfig.getImageCache().get(url);
-        if(bitmap!=null) {
-            imageView.setImageBitmap(bitmap);
-            return;
-        }
+        imageView.setImageBitmap(null);
         if(callBack!=null)
             callBack.onLoadingStarted(url,imageView);
-
     }
 
     @Override
     protected Bitmap doInBackground(String... strings) {
+        ReentrantLock loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url);
+        loadFromUriLock.lock();
+        Bitmap   bitmap=null;
         try {
-        if(bitmap==null) {
-            loadFromUriLock.lock();
-            Log.e("CImage","本地无缓存文件....从网络下载图片"+url);
-                InputStream stream=new BaseImageDownloader(mContext).getStream(url,null);
-                if(stream!=null) {
-                    bitmap = BitmapFactory.decodeStream(stream);
-                    cacheConfig.getImageCache().put(url,bitmap);
-                }
-        }else {
+            bitmap = cacheConfig.getImageCache().get(url);
+        if(bitmap!=null) {
             Log.e("CImage","从本地缓存文件获取图片成功...."+url);
-        }
+            return bitmap;
+        } else {
+            Log.e("CImage","本地无缓存文件....从网络下载图片"+url);
+            InputStream stream=new BaseImageDownloader(mContext).getStream(url,null);
+            if(stream!=null) {
+                bitmap = BitmapFactory.decodeStream(stream);
+                cacheConfig.getImageCache().put(url,bitmap);
+            }
+         }
         } catch (IOException e) {
             e.printStackTrace();
             if(callBack!=null)
                 callBack.onLoadingFailed(url,imageView,new CImageException(CImageException.FailType.IO_ERROR,e));
         }finally {
-            loadFromUriLock.unlock();
+               loadFromUriLock.unlock();
         }
         return bitmap;
     }

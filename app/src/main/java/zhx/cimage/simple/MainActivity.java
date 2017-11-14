@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             "https://www.eff.org/sites/default/files/chrome150_0.jpg", // Image from HTTPS
             "http://bit.ly/soBiXr", // Redirect link
             "http://img001.us.expono.com/100001/100001-1bc30-2d736f_m.jpg", // EXIF
-            "", // Empty link
+            "..", // Empty link
             "http://wrong.site.com/corruptedLink", // Wrong link
     };
 }
