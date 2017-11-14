@@ -9,6 +9,7 @@ import zhx.cimage.exception.CImageException;
 import zhx.cimage.cache.CacheConfig;
 import zhx.cimage.cache.ImageCache;
 import zhx.cimage.displayer.DisPlayer;
+import zhx.cimage.utils.BitmapUtils;
 import zhx.cimage.utils.Log;
 
 /**
@@ -100,8 +101,6 @@ public class BaseImageCache implements ImageCache {
        mMemoryCache.clear();
         mDiskCache.clear();
     }
-
-
     public DisPlayer getDisplayer() {
         return mdisplayer;
     }

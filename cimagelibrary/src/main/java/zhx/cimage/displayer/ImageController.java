@@ -1,5 +1,9 @@
 package zhx.cimage.displayer;
 
+import android.widget.ImageView;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,12 +22,21 @@ public class ImageController {
         return minstance;
     }
     private final Map<String, ReentrantLock> uriLocks = new WeakHashMap<String, ReentrantLock>();
-   public ReentrantLock  preperToLoadUrl(String url){
+    private final Map<Integer, String> cacheKeysForImageAwares = Collections
+            .synchronizedMap(new HashMap<Integer, String>());
+   public ReentrantLock  preperToLoadUrl(String url, ImageView imageView){
        ReentrantLock loadFromUriLock=uriLocks.get(url);
        if(loadFromUriLock==null){
            loadFromUriLock=new ReentrantLock();
            uriLocks.put(url,loadFromUriLock);
        }
+       cacheKeysForImageAwares.put(imageView.hashCode(),url);
+       imageView.setTag(url);
       return  loadFromUriLock;
    }
+
+    public boolean isDisplay(ImageView imageView, String url) {
+       String valus=cacheKeysForImageAwares.get(imageView.hashCode());
+       return url.equals(valus);
+    }
 }

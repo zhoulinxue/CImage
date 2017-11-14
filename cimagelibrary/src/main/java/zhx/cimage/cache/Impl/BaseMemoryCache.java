@@ -35,5 +35,6 @@ public class BaseMemoryCache implements ImageCache {
     public void clear() {
         bitmapLruCache.evictAll();
     }
+
 }
 

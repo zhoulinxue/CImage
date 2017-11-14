@@ -56,7 +56,7 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
      * 开始加载...
      */
     public void end(String...param){
-        ReentrantLock loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url);
+        ReentrantLock loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url,imageView);
         if(loadFromUriLock.isLocked()) {
             Log.e("loading...wait");
         }
@@ -74,7 +74,7 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... strings) {
-        ReentrantLock loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url);
+        ReentrantLock loadFromUriLock=ImageController.getInstance().preperToLoadUrl(url,imageView);
         loadFromUriLock.lock();
         Bitmap   bitmap=null;
         try {
@@ -109,7 +109,7 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
                 Log.e("..","创建显示器....");
                 disPlayer = new AnimateDisplayer();
             }
-            if(imageView.getTag().equals(url)) {
+            if(ImageController.getInstance().isDisplay(imageView,url)) {
                 disPlayer.display(imageView, bitmap);
             }else {
                 imageView.setImageBitmap(null);

@@ -1,5 +1,6 @@
 package zhx.cimage.simple;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

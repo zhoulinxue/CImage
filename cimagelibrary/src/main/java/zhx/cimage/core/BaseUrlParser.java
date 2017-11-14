@@ -29,7 +29,6 @@ public class BaseUrlParser implements UrlParser {
             Log.e("image can not be null");
             throw new NullPointerException("imageView can not be null");
         }
-        imageView.setTag(url);
         return new BitmapContainer(imageView,url,cacheConfig);
     }
 }
