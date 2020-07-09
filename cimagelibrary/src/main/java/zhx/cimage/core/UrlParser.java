@@ -1,6 +1,6 @@
 package zhx.cimage.core;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.ImageView;
 
 import zhx.cimage.displayer.BitmapContainer;
@@ -12,4 +12,5 @@ import zhx.cimage.displayer.BitmapContainer;
 
 public interface UrlParser {
     public BitmapContainer into( ImageView imageView);
+
 }

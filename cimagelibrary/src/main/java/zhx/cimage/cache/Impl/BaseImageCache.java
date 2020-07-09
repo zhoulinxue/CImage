@@ -83,7 +83,7 @@ public class BaseImageCache implements ImageCache {
             return;
         }
         if(bitmap==null){
-            CImageException.throwNullValus();
+            Log.e("CImage","缓存失败 bitmap==null");
             return;
         }
         // 缓存到内存

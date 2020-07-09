@@ -8,11 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import java.util.List;
-
 import zhx.cimage.CImage;
 import zhx.cimage.displayer.DisplayerImpl.AnimateDisplayer;
-import zhx.cimage.displayer.DisplayerImpl.RoundCornerDisplayer;
 
 /**
  * Created by ${zhouxue} on 17/10/5 16: 32.
@@ -45,11 +42,21 @@ public class TextAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view==null){
+        ViewHolder holder= null;
+        if(view!=null&&view.getTag()!=null){
+            holder= (ViewHolder) view.getTag();
+        }else {
+            holder=new ViewHolder();
             view= LayoutInflater.from(context).inflate(R.layout.listview_item_layout,null);
+            view.setTag(holder);
+            holder.imageView=view.findViewById(R.id.text_img);
         }
-        ImageView tximg= (ImageView) view.findViewById(R.id.text_img);
-        CImage.load(mList[i]).into(tximg).setDisPlayer(new AnimateDisplayer(300)).smallend();
+
+        CImage.load(mList[i]).into(holder.imageView).setDisPlayer(new AnimateDisplayer(300)).smallend();
         return view;
+    }
+    public class ViewHolder{
+        public ImageView imageView;
+
     }
 }

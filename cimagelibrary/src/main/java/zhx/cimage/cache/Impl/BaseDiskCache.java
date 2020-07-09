@@ -31,15 +31,15 @@ public class BaseDiskCache   implements DiskCache, FileMaster{
     public Bitmap get(String url) {
         String name=encodefileName(url);
         String path=mCacheDir+File.separator+name;
-        Log.e("CImage","本地文件名:   "+name+" 本地路径:   "+path);
+        Log.e("CImage_缓存","本地文件名:   "+name+" 本地路径:   "+path);
         return BitmapFactory.decodeFile(path);
     }
 
     @Override
     public void put(String url, Bitmap bitmap) {
-        Log.e("CImage","网络地址"+url);
+        Log.e("CImage_缓存","网络地址"+url);
         if(isexist(url)){
-            Log.i("CImage","缓存文件已存在"+encodefileName(url));
+            Log.e("CImage_缓存","缓存文件已存在"+encodefileName(url));
             return;
         }
         File panrent=null;
@@ -53,11 +53,12 @@ public class BaseDiskCache   implements DiskCache, FileMaster{
         try {
             File file=new File(panrent+File.separator+encodefileName(url));
              stream=new FileOutputStream(file.getAbsolutePath());
-             Log.i("CImage",panrent+File.separator+encodefileName(url)+"缓存地址");
+             Log.e("CImage_缓存",panrent+File.separator+encodefileName(url)+"缓存地址");
              bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
+            zhx.cimage.utils.Log.e("CImage_缓存","缓存到本地文件");
             IoUtils.closeSilently(stream);
         }
     }

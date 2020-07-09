@@ -1,5 +1,7 @@
 package zhx.cimage;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,8 +38,13 @@ public class CImage {
         if(cacheConfig==null){
             throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
         }
-      return new BaseUrlParser(url,cacheConfig);
+        UrlParser parser=hashMap.get(url);
+        if(parser==null){
+            parser=new BaseUrlParser(url,cacheConfig);
+        }
+      return parser;
     }
+    private  static Map<String,UrlParser> hashMap=new ConcurrentHashMap();
 
     public CImage(CacheConfig cacheConfig) {
         this.cacheConfig = cacheConfig;

@@ -32,12 +32,12 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
     private DisPlayer disPlayer;
     private CacheConfig cacheConfig;
 
+    public BitmapContainer() {
+    }
 
-    public BitmapContainer(ImageView imageView, String url, CacheConfig cacheConfig) {
-        this.imageView = imageView;
+    public BitmapContainer(String url, CacheConfig cacheConfig) {
         this.url = url;
         this.cacheConfig = cacheConfig;
-        mContext=imageView.getContext();
     }
 
     public BitmapContainer setCallBack(ImageLoadCallBack callBack) {
@@ -87,11 +87,9 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
             InputStream stream=new BaseImageDownloader(mContext).getStream(url,null);
             if(stream!=null) {
                 bitmap = BitmapFactory.decodeStream(stream);
-                cacheConfig.getImageCache().put(url,bitmap);
             }
          }
         } catch (IOException e) {
-            e.printStackTrace();
             if(callBack!=null)
                 callBack.onLoadingFailed(url,imageView,new CImageException(CImageException.FailType.IO_ERROR,e));
         }finally {
@@ -102,11 +100,12 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
+        cacheConfig.getImageCache().put(url,bitmap);
         if(callBack!=null)
             callBack.onLoadingComplete(url,imageView,bitmap);
         else {
             if(disPlayer==null) {
-                Log.e("..","创建显示器....");
+                Log.e("CImage","创建显示器....");
                 disPlayer = new AnimateDisplayer();
             }
             if(ImageController.getInstance().isDisplay(imageView,url)) {
@@ -115,6 +114,15 @@ public class BitmapContainer extends AsyncTask<String,String,Bitmap> {
                 imageView.setImageBitmap(null);
             }
         }
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+        mContext=imageView.getContext();
     }
 
     public BitmapContainer setDisPlayer(DisPlayer disPlayer) {

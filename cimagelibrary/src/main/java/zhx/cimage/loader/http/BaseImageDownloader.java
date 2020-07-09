@@ -42,30 +42,39 @@ import java.net.URLConnection;
 import zhx.cimage.io.ContentLengthInputStream;
 import zhx.cimage.loader.ImageLoader;
 import zhx.cimage.utils.IoUtils;
+import zhx.cimage.utils.Log;
 
 /**
- * Provides retrieving of {@link InputStream} of image by URI from network or file system or app resources.<br />
- * {@link URLConnection} is used to retrieve image stream from network.
- *
- * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
- * @since 1.8.0
+ * uri for image scheme
  */
 public class BaseImageDownloader implements ImageLoader {
-	/** {@value} */
-	public static final int DEFAULT_HTTP_CONNECT_TIMEOUT = 5 * 1000; // milliseconds
-	/** {@value} */
-	public static final int DEFAULT_HTTP_READ_TIMEOUT = 20 * 1000; // milliseconds
-
-	/** {@value} */
+	private String TAG=BaseImageDownloader.class.getSimpleName();
+	/**
+	 * 连接超时 时间
+	 */
+	public static final int DEFAULT_HTTP_CONNECT_TIMEOUT = 20 * 1000;
+	/**
+	 * 读取超时时间
+	 */
+	public static final int DEFAULT_HTTP_READ_TIMEOUT = 20 * 1000;
+	/**
+	 * 读取大小
+	 */
 	protected static final int BUFFER_SIZE = 32 * 1024; // 32 Kb
-	/** {@value} */
+	/**
+	 * URL 关键字
+	 */
 	protected static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
-
+	/**
+	 * 最大重连次数
+	 */
 	protected static final int MAX_REDIRECT_COUNT = 5;
-
+	/**
+	 *
+	 */
 	protected static final String CONTENT_CONTACTS_URI_PREFIX = "content://com.android.contacts/";
 
-	private static final String ERROR_UNSUPPORTED_SCHEME = "UIL doesn't support scheme(protocol) by default [%s]. " + "You should implement this support yourself (BaseImageDownloader.getStreamFromOtherSource(...))";
+	private static final String ERROR_UNSUPPORTED_SCHEME = "scheme error";
 
 	protected final Context context;
 	protected final int connectTimeout;
@@ -96,6 +105,7 @@ public class BaseImageDownloader implements ImageLoader {
 			case DRAWABLE:
 				return getStreamFromDrawable(imageUri, extra);
 			case UNKNOWN:
+				Log.e(TAG,imageUri+"");
 			default:
 				return getStreamFromOtherSource(imageUri, extra);
 		}

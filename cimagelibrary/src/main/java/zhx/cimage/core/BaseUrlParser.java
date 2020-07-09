@@ -1,12 +1,13 @@
 package zhx.cimage.core;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.widget.ImageView;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import zhx.cimage.cache.CacheConfig;
 import zhx.cimage.displayer.BitmapContainer;
-import zhx.cimage.displayer.DisPlayer;
 import zhx.cimage.utils.Log;
 
 /**
@@ -17,10 +18,12 @@ import zhx.cimage.utils.Log;
 public class BaseUrlParser implements UrlParser {
     private String url;
     private CacheConfig cacheConfig;
+    private BitmapContainer container;
 
     public BaseUrlParser(String url, CacheConfig cacheConfig) {
         this.url = url;
         this.cacheConfig = cacheConfig;
+        this.container=new BitmapContainer(url,cacheConfig);
     }
 
     @Override
@@ -29,6 +32,7 @@ public class BaseUrlParser implements UrlParser {
             Log.e("image can not be null");
             throw new NullPointerException("imageView can not be null");
         }
-        return new BitmapContainer(imageView,url,cacheConfig);
+        container.setImageView(imageView);
+        return container;
     }
 }

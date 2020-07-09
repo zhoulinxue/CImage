@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import zhx.cimage.displayer.CImageAnimate;
 import zhx.cimage.displayer.DisPlayer;
+import zhx.cimage.utils.Log;
 
 /**
  * Created by ${zhouxue} on 17/10/5 15: 03.
@@ -27,6 +28,7 @@ public class AnimateDisplayer implements DisPlayer,CImageAnimate{
     }
     @Override
     public void display(ImageView imageView, Bitmap bitmap) {
+        Log.e("CImage_显示","显示图片 bitmap "+(bitmap==null?"空":"不为空"));
         imageView.setImageBitmap(bitmap);
         animate(imageView,durationMillis);
     }
