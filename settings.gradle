@@ -1,1 +1,1 @@
-include ':app', ':cimagelibrary'
+include ':app',':library'

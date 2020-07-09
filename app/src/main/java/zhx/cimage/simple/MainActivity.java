@@ -4,9 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import zhx.cimage.CImage;
-import zhx.cimage.cache.CacheConfig;
-
+import org.zhx.common.image.CImage;
+import org.zhx.common.image.cache.CacheConfig;
 public class MainActivity extends AppCompatActivity {
     private ListView mListView;
 
@@ -29,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
             "assets://Living Things @#&=+-_.,!()~'%20.jpg",
             "http://mpic.tiankong.com/05a/fda/05afdae70cf4dcf046ac9ddae51db8e4/640.jpg",
             "drawable://" + R.mipmap.ic_launcher,
-            "https://www.feizl.com/html/117282_12.htm",
-            "https://www.feizl.com/html/117282_2.htm",
+            "https://pic.feizl.com/upload/allimg/170810/1008kfibb5kpmpp.jpg",
+            "https://pic.feizl.com/upload/allimg/170810/1007bfxpfhg3nqz.jpg",
             "http://5b0988e595225.cdn.sohucs.com/images/20181209/bc3b96877862459098839e3c9b6ebc23.jpeg", // Redirect link
 
             "http://mpic.tiankong.com/786/db8/786db8df99d52a7aabcc7be97728e6c9/640.jpg",

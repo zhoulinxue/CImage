@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import zhx.cimage.CImage;
-import zhx.cimage.displayer.DisplayerImpl.AnimateDisplayer;
+import org.zhx.common.image.CImage;
+import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
 
 /**
  * Created by ${zhouxue} on 17/10/5 16: 32.
@@ -52,7 +52,7 @@ public class TextAdapter extends BaseAdapter {
             holder.imageView=view.findViewById(R.id.text_img);
         }
 
-        CImage.load(mList[i]).into(holder.imageView).setDisPlayer(new AnimateDisplayer(300)).smallend();
+        CImage.load(mList[i]).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).into(holder.imageView).setDisPlayer(new AnimateDisplayer(300)).smallend();
         return view;
     }
     public class ViewHolder{

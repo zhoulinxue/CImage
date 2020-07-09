@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "zhx.cimage"
+        applicationId "org.zhx.common.image"
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
@@ -19,11 +19,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'androidx.appcompat:appcompat:1.0.0'
-    testCompile 'junit:junit:4.12'
-    compile project(':cimagelibrary')
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'junit:junit:4.12'
+    implementation project(':library')
 }
