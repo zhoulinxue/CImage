@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.displayer.BitmapContainer;
+import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.utils.Log;
 
 /**
@@ -17,6 +18,7 @@ public class BaseUrlParser implements UrlParser {
     private CacheConfig cacheConfig;
     private BitmapContainer container;
     private int logdingDrawable,errorDrawable;
+    private ImageLoader imageLoader;
 
     public BaseUrlParser(String url, CacheConfig cacheConfig, int logdingDrawable, int errorDrawable) {
         this.url = url;
@@ -25,10 +27,10 @@ public class BaseUrlParser implements UrlParser {
         this.errorDrawable = errorDrawable;
     }
 
-    public BaseUrlParser(String url, CacheConfig cacheConfig) {
+    public BaseUrlParser(String url, CacheConfig cacheConfig,ImageLoader imageLoader) {
         this.url = url;
         this.cacheConfig = cacheConfig;
-        this.container=new BitmapContainer(url,cacheConfig);
+        this.container=new BitmapContainer(url,cacheConfig,imageLoader);
     }
 
     @Override

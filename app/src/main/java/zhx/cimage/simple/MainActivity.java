@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import org.zhx.common.image.CImage;
-import org.zhx.common.image.cache.CacheConfig;
+import org.zhx.common.image.loader.http.BaseImageDownloader;
+
 public class MainActivity extends AppCompatActivity {
     private ListView mListView;
 
@@ -13,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        CImage.init(CacheConfig.getInstance());
+        CImage.init().setImageLoader(new BaseImageDownloader(this));
         mListView= (ListView) findViewById(R.id.listView);
         TextAdapter mAdapter=new TextAdapter(IMAGES,this);
         mListView.setAdapter(mAdapter);
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             "drawable://" + R.mipmap.ic_launcher,
             "https://pic.feizl.com/upload/allimg/170810/1008kfibb5kpmpp.jpg",
             "https://pic.feizl.com/upload/allimg/170810/1007bfxpfhg3nqz.jpg",
+
             "http://5b0988e595225.cdn.sohucs.com/images/20181209/bc3b96877862459098839e3c9b6ebc23.jpeg", // Redirect link
 
             "http://mpic.tiankong.com/786/db8/786db8df99d52a7aabcc7be97728e6c9/640.jpg",

@@ -27,8 +27,7 @@ public  class RoundCornerDisplayer extends AnimateDisplayer{
     @Override
     public void display(ImageView imageView, Bitmap bitmap) {
         Log.e("","显示 图片....");
-         imageView.setImageBitmap(BitmapFillet.fillet(BitmapFillet.CornerType.ALL,bitmap,cornerRadius));
-         animate(imageView,durationMillis);
+         animate(imageView,BitmapFillet.fillet(BitmapFillet.CornerType.ALL,bitmap,cornerRadius),durationMillis);
     }
 
 }

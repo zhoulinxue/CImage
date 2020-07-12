@@ -2,6 +2,7 @@ package org.zhx.common.image.displayer.DisplayerImpl;
 
 import android.graphics.Bitmap;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
@@ -28,18 +29,32 @@ public class AnimateDisplayer implements DisPlayer,CImageAnimate{
     }
     @Override
     public void display(ImageView imageView, Bitmap bitmap) {
-        Log.e("CImage_显示","显示图片 bitmap "+(bitmap==null?"空":"不为空"));
-        imageView.setImageBitmap(bitmap);
-        animate(imageView,durationMillis);
+        animate(imageView,bitmap,durationMillis);
     }
 
     @Override
-    public void animate(ImageView imageView, int durationMillis) {
+    public void animate(final ImageView imageView,final Bitmap bitmap ,int durationMillis) {
         if (imageView != null) {
             AlphaAnimation fadeImage = new AlphaAnimation(0, 1);
             fadeImage.setDuration(durationMillis);
             fadeImage.setInterpolator(new DecelerateInterpolator());
             imageView.startAnimation(fadeImage);
+            fadeImage.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    imageView.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
         }
     }
 

@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.X509TrustManager;
+
 
 public interface ImageLoader {
-
+	public void initHttps(X509TrustManager manager,HostnameVerifier hostnameVerifier);
 	InputStream getStream(String imageUri, Object extra) throws IOException;
 
 	public enum Scheme {

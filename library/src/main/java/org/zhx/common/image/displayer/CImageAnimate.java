@@ -1,5 +1,6 @@
 package org.zhx.common.image.displayer;
 
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
@@ -14,6 +15,6 @@ public interface CImageAnimate {
      * @param imageView
      * @param durationMillis
      */
-    public void animate(ImageView imageView, int durationMillis);
+    public void animate(ImageView imageView, Bitmap bitmap, int durationMillis);
 
 }
