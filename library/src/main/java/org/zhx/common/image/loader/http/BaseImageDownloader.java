@@ -145,17 +145,17 @@ public class BaseImageDownloader implements ImageLoader {
             conn.setReadTimeout(readTimeout);
             conn.setConnectTimeout(connectTimeout);
             SSLSocketFactory factory = sslContext.getSocketFactory();
-            ;
             HttpsURLConnection.setDefaultSSLSocketFactory(factory);
             conn.setSSLSocketFactory(factory);
             conn.setHostnameVerifier(hostnameVerifier);
 
             conn.setInstanceFollowRedirects(false);
-            conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setRequestProperty("Content-Type", "application/octet-stream");
             conn.setRequestProperty("Connection", "Keep-Alive");
             InputStream imageStream;
+           int code= conn.getResponseCode();
+           CLog.e(code+" "+imageUri);
             try {
                 imageStream = conn.getInputStream();
             } catch (IOException e) {
