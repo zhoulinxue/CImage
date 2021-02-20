@@ -36,9 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.KeyManagementException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -46,7 +44,7 @@ import java.security.cert.X509Certificate;
 import org.zhx.common.image.io.ContentLengthInputStream;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.utils.IoUtils;
-import org.zhx.common.image.utils.Log;
+import org.zhx.common.image.utils.CLog;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -107,9 +105,10 @@ public class BaseImageDownloader implements ImageLoader {
 
 
     }
+
     public static class SSLSocketClient {
         //获取这个SSLSocketFactory
-        public  static SSLSocketFactory getSSLSocketFactory() {
+        public static SSLSocketFactory getSSLSocketFactory() {
             try {
                 SSLContext sslContext = SSLContext.getInstance("SSL");
                 sslContext.init(null, getTrustManager(), new SecureRandom());
@@ -120,7 +119,7 @@ public class BaseImageDownloader implements ImageLoader {
         }
 
         //获取TrustManager
-        private  static TrustManager[] getTrustManager() {
+        private static TrustManager[] getTrustManager() {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
@@ -168,7 +167,7 @@ public class BaseImageDownloader implements ImageLoader {
             case DRAWABLE:
                 return getStreamFromDrawable(imageUri, extra);
             case UNKNOWN:
-                Log.e(TAG, imageUri + "");
+                CLog.e(TAG, imageUri + "");
             default:
                 return getStreamFromOtherSource(imageUri, extra);
         }
@@ -181,7 +180,7 @@ public class BaseImageDownloader implements ImageLoader {
             conn = (HttpsURLConnection) serverUrl.openConnection();
             conn.setReadTimeout(readTimeout);
             conn.setConnectTimeout(connectTimeout);
-            SSLSocketFactory factory=SSLSocketClient.getSSLSocketFactory();
+            SSLSocketFactory factory = SSLSocketClient.getSSLSocketFactory();
             HttpsURLConnection.setDefaultSSLSocketFactory(factory);
             conn.setSSLSocketFactory(factory);
             conn.setHostnameVerifier(SSLSocketClient.getHostnameVerifier());
@@ -189,7 +188,7 @@ public class BaseImageDownloader implements ImageLoader {
             conn.setInstanceFollowRedirects(false);
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setRequestProperty("Content-Type","application/octet-stream");
+            conn.setRequestProperty("Content-Type", "application/octet-stream");
             conn.setRequestProperty("Connection", "Keep-Alive");
             InputStream imageStream;
             try {
@@ -218,10 +217,10 @@ public class BaseImageDownloader implements ImageLoader {
     private static void trustAllHosts() {
         final String TAG = "trustAllHosts";
         // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[] {
+        TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return new java.security.cert.X509Certificate[] {};
+                        return new java.security.cert.X509Certificate[]{};
                     }
 
                     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -267,7 +266,6 @@ public class BaseImageDownloader implements ImageLoader {
         try {
             imageStream = conn.getInputStream();
         } catch (IOException e) {
-            // Read all data to allow reuse connection (http://bit.ly/1ad35PY)
             e.printStackTrace();
             IoUtils.readAndCloseStream(conn.getErrorStream());
             throw e;

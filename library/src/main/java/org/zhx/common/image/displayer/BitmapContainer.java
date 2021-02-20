@@ -17,7 +17,7 @@ import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
 import org.zhx.common.image.exception.CImageException;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.loader.http.BaseImageDownloader;
-import org.zhx.common.image.utils.Log;
+import org.zhx.common.image.utils.CLog;
 
 /**
  * Created by ${zhouxue} on 17/10/4 20: 55.
@@ -64,7 +64,7 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
     public void end(String... param) {
         ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
         if (loadFromUriLock.isLocked()) {
-            Log.e("loading...wait");
+            CLog.e("loading...wait");
         }
         execute(url, param[0]);
     }
@@ -87,36 +87,48 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
         ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
         loadFromUriLock.lock();
         Bitmap bitmap = null;
+        boolean error = false;
         try {
             bitmap = cacheConfig.getImageCache().get(url);
             if (bitmap != null) {
-                Log.e("CImage", "从本地缓存文件获取图片成功...." + url);
+                CLog.e( "从本地缓存文件获取图片成功...." + url);
                 return bitmap;
             } else {
-                Log.e("CImage", "本地无缓存文件....从网络下载图片..." + url);
+                CLog.e( "本地无缓存文件....从网络下载图片..." + url);
                 if (imageLoader == null) {
                     imageLoader = new BaseImageDownloader(mContext);
                 }
                 InputStream stream = imageLoader.getStream(url, null);
                 if (stream != null) {
                     bitmap = BitmapFactory.decodeStream(stream);
+                } else {
+                    error = true;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            if (errorDrawable != 0) {
-                return BitmapFactory.decodeResource(mContext.getResources(), errorDrawable);
-            } else {
-                if (callBack != null)
-                    callBack.onLoadingFailed(url, imageView, new CImageException(CImageException.FailType.IO_ERROR, e));
-            }
+            return error(e);
         } finally {
             loadFromUriLock.unlock();
         }
-        if (bitmap != null) {
-            cacheConfig.getImageCache().put(url, bitmap);
+        if (error) {
+            return error(new Exception("Loading error"));
+        } else {
+            if (bitmap != null) {
+                cacheConfig.getImageCache().put(url, bitmap);
+            }
         }
         return bitmap;
+    }
+
+    private Bitmap error(Exception e) {
+        if (errorDrawable != 0) {
+            return BitmapFactory.decodeResource(mContext.getResources(), errorDrawable);
+        } else {
+            if (callBack != null)
+                callBack.onLoadingFailed(url, imageView, new CImageException(CImageException.FailType.IO_ERROR, e));
+        }
+        return null;
     }
 
     @Override
@@ -125,11 +137,11 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
             callBack.onLoadingComplete(url, imageView, bitmap);
         else {
             if (disPlayer == null) {
-                Log.e("CImage", "创建显示器....");
+                CLog.e("创建显示器....");
                 disPlayer = new AnimateDisplayer();
             }
             if (ImageController.getInstance().isDisplay(imageView, url)) {
-                Log.e("CImage_显示","显示图片 bitmap "+url+"  "+(bitmap==null?"空":"不为空"));
+                CLog.e("显示", "显示图片 bitmap " + url + "  " + (bitmap == null ? "空" : "不为空"));
                 disPlayer.display(imageView, bitmap);
             } else {
                 imageView.setImageBitmap(null);

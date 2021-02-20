@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import org.zhx.common.image.displayer.BitmapFillet;
-import org.zhx.common.image.utils.Log;
+import org.zhx.common.image.utils.CLog;
 
 /**
  * Created by ${zhouxue} on 17/10/5 14: 45.
@@ -26,7 +26,7 @@ public  class RoundCornerDisplayer extends AnimateDisplayer{
 
     @Override
     public void display(ImageView imageView, Bitmap bitmap) {
-        Log.e("","显示 图片....");
+        CLog.e("","显示 图片....");
          animate(imageView,BitmapFillet.fillet(BitmapFillet.CornerType.ALL,bitmap,cornerRadius),durationMillis);
     }
 

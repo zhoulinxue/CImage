@@ -42,7 +42,7 @@ public class FileUtil {
         String dirPath;
 
         if (TextUtils.isEmpty(fileName) || 0 == image.length) {
-            Log.e(TAG, "saveImage2SandBox: fileName is null or image is null!");
+            CLog.e(TAG, "saveImage2SandBox: fileName is null or image is null!");
             return;
         }
 
@@ -61,7 +61,7 @@ public class FileUtil {
         File imageFileDirctory = new File(dirPath);
         if (!imageFileDirctory.exists()) {
             if (!imageFileDirctory.mkdir()) {
-                Log.e(TAG, "saveImage2SandBox: mkdir failed! Directory: " + dirPath);
+                CLog.e(TAG, "saveImage2SandBox: mkdir failed! Directory: " + dirPath);
                 return;
             }
         }
@@ -93,7 +93,7 @@ public class FileUtil {
         String dirPath;
 
         if (TextUtils.isEmpty(fileName)) {
-            Log.e(TAG, "loadImageFromSandBox: fileName is null");
+            CLog.e(TAG, "loadImageFromSandBox: fileName is null");
             return null;
         }
 
@@ -229,8 +229,8 @@ public class FileUtil {
                     String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.RELATIVE_PATH));   // 图片的相对路径
                     String type = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));       // 图片类型
                     String name = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));    // 图片名字
-                    Log.d(TAG, "loadImageFromPublic: id = " + id);
-                    Log.d(TAG, "loadImageFromPublic: name = " + name);
+                    CLog.d(TAG, "loadImageFromPublic: id = " + id);
+                    CLog.d(TAG, "loadImageFromPublic: name = " + name);
                     //根据图片id获取uri，这里的操作是拼接uri
                     Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
                     //官方代码：
@@ -290,7 +290,7 @@ public class FileUtil {
      */
     private static Cursor searchImageFromPublic(Context context, String filePath, String fileName) {
         if (TextUtils.isEmpty(fileName)) {
-            Log.e(TAG, "searchImageFromPublic: fileName is null");
+            CLog.e(TAG, "searchImageFromPublic: fileName is null");
             return null;
         }
         if (TextUtils.isEmpty(filePath)) {
@@ -386,7 +386,7 @@ public class FileUtil {
      */
     private static Cursor searchTxtFromPublic(Context context, String filePath, String fileName) {
         if (TextUtils.isEmpty(fileName)) {
-            Log.e(TAG, "searchTxtFromPublic: fileName is null");
+            CLog.e(TAG, "searchTxtFromPublic: fileName is null");
             return null;
         }
         if (!filePath.endsWith("/")) {

@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import org.zhx.common.image.displayer.CImageAnimate;
 import org.zhx.common.image.displayer.DisPlayer;
-import org.zhx.common.image.utils.Log;
 
 /**
  * Created by ${zhouxue} on 17/10/5 15: 03.

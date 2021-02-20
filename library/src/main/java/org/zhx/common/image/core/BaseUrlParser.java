@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.displayer.BitmapContainer;
 import org.zhx.common.image.loader.ImageLoader;
-import org.zhx.common.image.utils.Log;
+import org.zhx.common.image.utils.CLog;
 
 /**
  * Created by ${zhouxue} on 17/10/4 21: 17.
@@ -36,7 +36,7 @@ public class BaseUrlParser implements UrlParser {
     @Override
     public BitmapContainer into(@Nullable ImageView imageView) {
         if(imageView==null){
-            Log.e("image can not be null");
+            CLog.e("image can not be null");
             throw new NullPointerException("imageView can not be null");
         }
         container.setImageView(imageView);

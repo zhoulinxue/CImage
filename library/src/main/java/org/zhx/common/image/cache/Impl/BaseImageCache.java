@@ -8,7 +8,7 @@ import org.zhx.common.image.cache.DiskCache;
 import org.zhx.common.image.cache.ImageCache;
 import org.zhx.common.image.displayer.DisPlayer;
 import org.zhx.common.image.exception.CImageException;
-import org.zhx.common.image.utils.Log;
+import org.zhx.common.image.utils.CLog;
 
 /**
  * Created by ${zhouxue} on 17/10/4 13: 55.
@@ -67,7 +67,7 @@ public class BaseImageCache implements ImageCache {
         }
         bitmap=mMemoryCache.get(url);
         if(bitmap==null){
-            Log.e("CImage", "内存中没有图片.....从缓存文件中取");
+            CLog.e("CImage", "内存中没有图片.....从缓存文件中取");
             bitmap=mDiskCache.get(url);
         }
         return bitmap;
@@ -81,7 +81,7 @@ public class BaseImageCache implements ImageCache {
             return;
         }
         if(bitmap==null){
-            Log.e("CImage","缓存失败 bitmap==null");
+            CLog.e("CImage","缓存失败 bitmap==null");
             return;
         }
         // 缓存到内存

@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 
 import org.zhx.common.image.cache.DiskCache;
 import org.zhx.common.image.cache.FileMaster;
+import org.zhx.common.image.utils.CLog;
 import org.zhx.common.image.utils.IoUtils;
 import org.zhx.common.image.utils.MD5Util;
 
@@ -62,7 +63,7 @@ public class BaseDiskCache   implements DiskCache, FileMaster{
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
-            org.zhx.common.image.utils.Log.e("CImage_缓存","缓存到本地文件");
+            CLog.e("CImage_缓存","缓存到本地文件");
             IoUtils.closeSilently(stream);
         }
     }

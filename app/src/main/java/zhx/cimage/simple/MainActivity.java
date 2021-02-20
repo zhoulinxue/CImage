@@ -22,15 +22,15 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String[] IMAGES = new String[] {
             // Heavy images
-            "http://mpic.tiankong.com/786/db8/786db8df99d52a7aabcc7be97728e6c9/640.jpg",
+            "https://alifei04.cfp.cn/creative/vcg/veer/800water/veer-373217773.jpg",
+            "https://goss.cfp.cn/creative/vcg/800/new/VCG211302297135.jpg",
             "http://5b0988e595225.cdn.sohucs.com/images/20181209/38467a58f9264ca68eefa37719b4b739.jpeg",
             // Special cases
             "file:///sdcard/Universal Image Loader @#&=+-_.,!()~'%20.png",
             "assets://Living Things @#&=+-_.,!()~'%20.jpg",
             "http://mpic.tiankong.com/05a/fda/05afdae70cf4dcf046ac9ddae51db8e4/640.jpg",
             "drawable://" + R.mipmap.ic_launcher,
-            "https://pic.feizl.com/upload/allimg/170810/1008kfibb5kpmpp.jpg",
-            "https://pic.feizl.com/upload/allimg/170810/1007bfxpfhg3nqz.jpg",
+            "https://ww2.sinaimg.cn/large/7a8aed7bgw1evshgr5z3oj20hs0qo0vq.jpg",
 
             "http://5b0988e595225.cdn.sohucs.com/images/20181209/bc3b96877862459098839e3c9b6ebc23.jpeg", // Redirect link
 

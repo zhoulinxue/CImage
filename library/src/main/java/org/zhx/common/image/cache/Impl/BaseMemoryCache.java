@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.util.LruCache;
 
 import org.zhx.common.image.cache.ImageCache;
-import org.zhx.common.image.utils.Log;
+import org.zhx.common.image.utils.CLog;
 
 /**
  * Created by ${zhouxue} on 17/10/4 17: 59.
@@ -29,7 +29,7 @@ public class BaseMemoryCache implements ImageCache {
 
     @Override
     public void put(String url, Bitmap bitmap) {
-        Log.e("CImage_缓存","缓存到内存");
+        CLog.e("CImage_缓存","缓存到内存");
         bitmapLruCache.put(url,bitmap);
     }
 
