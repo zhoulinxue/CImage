@@ -1,9 +1,13 @@
 package org.zhx.common.image;
 
+import android.app.Application;
+import android.content.Context;
+
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.core.BaseUrlParser;
 import org.zhx.common.image.core.UrlParser;
 import org.zhx.common.image.loader.ImageLoader;
+import org.zhx.common.image.loader.http.BaseImageDownloader;
 import org.zhx.common.image.loader.https.CImageHostnameVerifier;
 import org.zhx.common.image.loader.https.CImageX509TrustManager;
 
@@ -29,16 +33,12 @@ public class CImage {
     private static CImage mCImage;
     public static boolean isDebug = true;
     private static CacheConfig cacheConfig;
-    private X509TrustManager x509TrustManager;
-    private HostnameVerifier hostnameVerifier;
     private static ImageLoader imageLoader;
 
-    public static CImage init() {
-        if (mCImage == null) {
-            HostnameVerifier ignoreHostnameVerifier = new CImageHostnameVerifier();
-            mCImage = new CImage(CacheConfig.getInstance(), new CImageX509TrustManager(), ignoreHostnameVerifier);
-        }
-        return mCImage;
+    public static CImage init(Context context) {
+        CImageX509TrustManager manager = new CImageX509TrustManager();
+        CImageHostnameVerifier hostnameVerifier = new CImageHostnameVerifier();
+        return init(context, manager, hostnameVerifier);
     }
 
     public CImage setImageLoader(ImageLoader loader) {
@@ -46,10 +46,17 @@ public class CImage {
         return mCImage;
     }
 
-    public static void init(X509TrustManager x509TrustManager, HostnameVerifier hostnameVerifier) {
+    public static CImage init(Context context, X509TrustManager x509TrustManager, HostnameVerifier hostnameVerifier) {
         if (mCImage == null) {
-            mCImage = new CImage(CacheConfig.getInstance(), x509TrustManager, hostnameVerifier);
+            synchronized (CImage.class) {
+                if (mCImage == null) {
+                    mCImage = new CImage(CacheConfig.getInstance());
+                    imageLoader = new BaseImageDownloader(context);
+                    imageLoader.initHttps(x509TrustManager, hostnameVerifier);
+                }
+            }
         }
+        return mCImage;
     }
 
     /**
@@ -71,13 +78,8 @@ public class CImage {
 
     private static Map<String, UrlParser> hashMap = new ConcurrentHashMap();
 
-    public CImage(CacheConfig cacheConfig, X509TrustManager x509TrustManager, HostnameVerifier hostnameVerifier) {
+    public CImage(CacheConfig cacheConfig) {
         this.cacheConfig = cacheConfig;
-        this.x509TrustManager = x509TrustManager;
-        this.hostnameVerifier = hostnameVerifier;
-        if(imageLoader!=null){
-            imageLoader.initHttps(x509TrustManager,hostnameVerifier);
-        }
     }
 
     public CacheConfig getCacheConfig() {

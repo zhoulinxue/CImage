@@ -1,6 +1,7 @@
 package zhx.cimage.simple;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -14,13 +15,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        CImage.init().setImageLoader(new BaseImageDownloader(this));
-        mListView= (ListView) findViewById(R.id.listView);
-        TextAdapter mAdapter=new TextAdapter(IMAGES,this);
+        CImage.init(this);
+        mListView = (ListView) findViewById(R.id.listView);
+        TextAdapter mAdapter = new TextAdapter(IMAGES, this);
         mListView.setAdapter(mAdapter);
     }
 
-    public static final String[] IMAGES = new String[] {
+    public static final String[] IMAGES = new String[]{
             // Heavy images
             "https://alifei04.cfp.cn/creative/vcg/veer/800water/veer-373217773.jpg",
             "https://goss.cfp.cn/creative/vcg/800/new/VCG211302297135.jpg",
