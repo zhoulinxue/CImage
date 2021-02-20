@@ -44,11 +44,11 @@ public class CacheConfig {
         return this;
     }
 
-    public int getmCurrentSize() {
+    public int getCurrentSize() {
         return mCurrentSize;
     }
 
-    public void setmCurrentSize(int mCurrentSize) {
+    public void setCurrentSize(int mCurrentSize) {
         this.mCurrentSize = mCurrentSize;
     }
 
@@ -74,5 +74,13 @@ public class CacheConfig {
 
     public void setImageCache(ImageCache imageCache) {
         this.imageCache = imageCache;
+    }
+
+    public String getCacheDir() {
+        return cacheDir;
+    }
+
+    public void setCacheDir(String cacheDir) {
+        this.cacheDir = cacheDir;
     }
 }

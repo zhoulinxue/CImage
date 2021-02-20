@@ -32,8 +32,8 @@ public class CImage {
     private static String TAG = CImage.class.getSimpleName();
     private static CImage mCImage;
     public static boolean isDebug = true;
-    private static CacheConfig cacheConfig;
     private static ImageLoader imageLoader;
+    private static CacheConfig mCacheConfig;
 
     public static CImage init(Context context) {
         CImageX509TrustManager manager = new CImageX509TrustManager();
@@ -50,8 +50,8 @@ public class CImage {
         if (mCImage == null) {
             synchronized (CImage.class) {
                 if (mCImage == null) {
-                    CacheConfig cacheConfig = new CacheConfig(context.getCacheDir().getAbsolutePath());
-                    mCImage = new CImage(cacheConfig);
+                    mCacheConfig = new CacheConfig(context.getCacheDir().getAbsolutePath());
+                    mCImage = new CImage(mCacheConfig);
                     imageLoader = new BaseImageDownloader(context);
                     imageLoader.initHttps(x509TrustManager, hostnameVerifier);
                 }
@@ -67,12 +67,12 @@ public class CImage {
      * @return
      */
     public static UrlParser load(String url) {
-        if (cacheConfig == null) {
+        if (mCacheConfig == null) {
             throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
         }
         UrlParser parser = hashMap.get(url);
         if (parser == null) {
-            parser = new BaseUrlParser(url, cacheConfig, imageLoader);
+            parser = new BaseUrlParser(url, mCacheConfig, imageLoader);
         }
         return parser;
     }
@@ -80,14 +80,14 @@ public class CImage {
     private static Map<String, UrlParser> hashMap = new ConcurrentHashMap();
 
     public CImage(CacheConfig cacheConfig) {
-        this.cacheConfig = cacheConfig;
+        this.mCacheConfig = cacheConfig;
     }
 
     public CacheConfig getCacheConfig() {
-        return cacheConfig;
+        return mCacheConfig;
     }
 
     public void setCacheConfig(CacheConfig cacheConfig) {
-        this.cacheConfig = cacheConfig;
+        this.mCacheConfig = cacheConfig;
     }
 }
