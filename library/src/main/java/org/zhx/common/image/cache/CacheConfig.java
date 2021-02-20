@@ -27,21 +27,20 @@ public class CacheConfig {
      * 缓存策略
      */
     private ImageCache imageCache;
+    /**
+     * 缓存的路径
+     */
+    private String cacheDir;
 
-
-
-    public static CacheConfig getInstance() {
-        if(config==null){
-            config=new CacheConfig();
-            config.initdefault();
-        }
-        return config;
+    public CacheConfig(String cacheDir) {
+        this.cacheDir = cacheDir;
+        initdefault();
     }
 
-    private CacheConfig initdefault(){
+    private CacheConfig initdefault() {
         setCacheInMemory(true);
         setCacheInDisk(true);
-        setImageCache(new BaseImageCache(Constant.mMemorySize,true,true));
+        setImageCache(new BaseImageCache(Constant.mMemorySize, true, true, cacheDir));
         return this;
     }
 

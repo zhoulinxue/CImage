@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import org.zhx.common.image.Constant;
+import org.zhx.common.image.Target;
 import org.zhx.common.image.cache.DiskCache;
 import org.zhx.common.image.cache.ImageCache;
 import org.zhx.common.image.displayer.DisPlayer;
@@ -13,7 +14,7 @@ import org.zhx.common.image.utils.CLog;
 /**
  * Created by ${zhouxue} on 17/10/4 13: 55.
  * QQ:515278502
- *
+ * <p>
  * 图片缓存 策略类
  */
 
@@ -38,67 +39,77 @@ public class BaseImageCache implements ImageCache {
     /**
      * 是否存在 内存
      */
-    private boolean isCacheInMemory=true;
+    private boolean isCacheInMemory = true;
     /**
      * 是否存在 硬盘
      */
-    private boolean isCacheOnDisk=true;
+    private boolean isCacheOnDisk = true;
+    /**
+     * 缓存的路径
+     */
+    private String cacheDir;
 
-    public BaseImageCache(int mCacheSize, boolean isCacheInMemory, boolean isCacheOnDisk) {
+    public BaseImageCache(int mCacheSize, boolean isCacheInMemory, boolean isCacheOnDisk, String cacheDir) {
         this.mCacheSize = mCacheSize;
         this.isCacheInMemory = isCacheInMemory;
         this.isCacheOnDisk = isCacheOnDisk;
+        this.cacheDir = cacheDir;
         init();
     }
-    private void init(){
-        if(isCacheInMemory()){
-            mMemoryCache=new BaseMemoryCache(mCacheSize);
+
+    private void init() {
+        if (isCacheInMemory()) {
+            mMemoryCache = new BaseMemoryCache(mCacheSize);
         }
-        if(isCacheOnDisk()){
-            mDiskCache=new BaseDiskCache(Constant.mDiskMaxSize,Constant.CocaheDir);
+        if (isCacheOnDisk()) {
+            mDiskCache = new BaseDiskCache(Constant.mDiskMaxSize, cacheDir);
         }
     }
 
     @Override
-    public final Bitmap get(String url) {
-        Bitmap bitmap=null;
-        if(TextUtils.isEmpty(url)){
+    public final Target get(String url) {
+        Target target = null;
+        if (TextUtils.isEmpty(url)) {
             CImageException.throwNullKey();
         }
-        bitmap=mMemoryCache.get(url);
-        if(bitmap==null){
-            CLog.e("CImage", "内存中没有图片.....从缓存文件中取");
-            bitmap=mDiskCache.get(url);
+        CLog.e("正在内存获取..." + url);
+        target = mMemoryCache.get(url);
+        if (target == null) {
+            CLog.e("内存获取失败..." + url);
+            target = mDiskCache.get(url);
+        } else {
+            CLog.e("内存获取成功" + url);
         }
-        return bitmap;
+        return target;
     }
 
 
     @Override
-    public final void put(String url, Bitmap bitmap) {
-        if(TextUtils.isEmpty(url)){
+    public final void put(String url, Target target) {
+        if (TextUtils.isEmpty(url)) {
             CImageException.throwNullKey();
             return;
         }
-        if(bitmap==null){
-            CLog.e("CImage","缓存失败 bitmap==null");
+        if (target == null) {
+            CLog.e("CImage", "缓存失败 bitmap==null");
             return;
         }
         // 缓存到内存
-        if(isCacheInMemory){
-            mMemoryCache.put(url, bitmap);
+        if (isCacheInMemory) {
+            mMemoryCache.put(url, target);
         }
         // 缓存到 磁盘
-        if(isCacheOnDisk){
-            mDiskCache.put(url,bitmap);
+        if (isCacheOnDisk) {
+            mDiskCache.put(url, target);
         }
     }
 
     @Override
     public void clear() {
-       mMemoryCache.clear();
+        mMemoryCache.clear();
         mDiskCache.clear();
     }
+
     public DisPlayer getDisplayer() {
         return mdisplayer;
     }

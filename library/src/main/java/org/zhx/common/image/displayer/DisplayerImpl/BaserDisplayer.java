@@ -3,6 +3,7 @@ package org.zhx.common.image.displayer.DisplayerImpl;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import org.zhx.common.image.Target;
 import org.zhx.common.image.displayer.DisPlayer;
 
 /**
@@ -10,11 +11,11 @@ import org.zhx.common.image.displayer.DisPlayer;
  * QQ:515278502
  */
 
-public class BaserDisplayer  implements DisPlayer{
+public class BaserDisplayer implements DisPlayer {
 
     @Override
-    public void display(ImageView imageView, Bitmap bitmap) {
-        imageView.setImageBitmap(bitmap);
+    public void display(ImageView imageView, Target target) {
+        target.bindView(imageView);
     }
 
 }

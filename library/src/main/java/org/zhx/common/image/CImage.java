@@ -50,7 +50,8 @@ public class CImage {
         if (mCImage == null) {
             synchronized (CImage.class) {
                 if (mCImage == null) {
-                    mCImage = new CImage(CacheConfig.getInstance());
+                    CacheConfig cacheConfig = new CacheConfig(context.getCacheDir().getAbsolutePath());
+                    mCImage = new CImage(cacheConfig);
                     imageLoader = new BaseImageDownloader(context);
                     imageLoader.initHttps(x509TrustManager, hostnameVerifier);
                 }

@@ -3,6 +3,7 @@ package org.zhx.common.image.cache.Impl;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
+import org.zhx.common.image.Target;
 import org.zhx.common.image.cache.ImageCache;
 import org.zhx.common.image.utils.CLog;
 
@@ -13,24 +14,24 @@ import org.zhx.common.image.utils.CLog;
  */
 public class BaseMemoryCache implements ImageCache {
     private int mCacheSize;
-    LruCache<String,Bitmap> bitmapLruCache;
+    LruCache<String,Target> bitmapLruCache;
 
     public BaseMemoryCache(int mCacheSize) {
         this.mCacheSize = mCacheSize;
-        bitmapLruCache=new LruCache<String,Bitmap>(mCacheSize);
+        bitmapLruCache=new LruCache<String,Target>(mCacheSize);
     }
 
     @Override
-    public Bitmap get(String url) {
+    public Target get(String url) {
         synchronized (this) {
             return bitmapLruCache.get(url);
         }
     }
 
     @Override
-    public void put(String url, Bitmap bitmap) {
-        CLog.e("CImage_缓存","缓存到内存");
-        bitmapLruCache.put(url,bitmap);
+    public void put(String url, Target target) {
+        CLog.e("缓存到内存");
+        bitmapLruCache.put(url,target);
     }
 
     @Override

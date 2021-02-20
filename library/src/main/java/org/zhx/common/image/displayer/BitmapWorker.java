@@ -11,6 +11,9 @@ import java.io.InputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.zhx.common.image.Constant;
+import org.zhx.common.image.Target;
+import org.zhx.common.image.bean.BitmapTarget;
+import org.zhx.common.image.bean.SourceTarget;
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.callback.ImageLoadCallBack;
 import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
@@ -18,13 +21,14 @@ import org.zhx.common.image.exception.CImageException;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.loader.http.BaseImageDownloader;
 import org.zhx.common.image.utils.CLog;
+import org.zhx.common.image.utils.IoUtils;
 
 /**
  * Created by ${zhouxue} on 17/10/4 20: 55.
  * QQ:515278502
  */
 
-public class BitmapWorker extends AsyncTask<String, String, Bitmap> {
+public class BitmapWorker extends AsyncTask<String, String, Target> {
     private ImageView imageView;
     private String url;
     private ImageLoadCallBack callBack;
@@ -73,9 +77,7 @@ public class BitmapWorker extends AsyncTask<String, String, Bitmap> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (logdingDrawable == 0) {
-            imageView.setImageBitmap(null);
-        } else {
+        if (logdingDrawable != 0) {
             imageView.setImageResource(logdingDrawable);
         }
         if (callBack != null)
@@ -83,24 +85,24 @@ public class BitmapWorker extends AsyncTask<String, String, Bitmap> {
     }
 
     @Override
-    protected Bitmap doInBackground(String... params) {
+    protected Target doInBackground(String... params) {
         ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
         loadFromUriLock.lock();
-        Bitmap bitmap = null;
+        Target target = null;
         boolean error = false;
+        InputStream stream=null;
         try {
-            bitmap = cacheConfig.getImageCache().get(url);
-            if (bitmap != null) {
-                CLog.e( "从本地缓存文件获取图片成功...." + url);
-                return bitmap;
+            target = cacheConfig.getImageCache().get(url);
+            if (target != null) {
+                return target;
             } else {
-                CLog.e( "本地无缓存文件....从网络下载图片..." + url);
+                CLog.e("本地无缓存文件....从网络下载图片..." + url);
                 if (imageLoader == null) {
                     imageLoader = new BaseImageDownloader(mContext);
                 }
-                InputStream stream = imageLoader.getStream(url, null);
+                 stream= imageLoader.getStream(url, null);
                 if (stream != null) {
-                    bitmap = BitmapFactory.decodeStream(stream);
+                    target = new BitmapTarget(BitmapFactory.decodeStream(stream));
                 } else {
                     error = true;
                 }
@@ -109,21 +111,22 @@ public class BitmapWorker extends AsyncTask<String, String, Bitmap> {
             e.printStackTrace();
             return error(e);
         } finally {
+            IoUtils.closeSilently(stream);
             loadFromUriLock.unlock();
         }
         if (error) {
             return error(new Exception("Loading error"));
         } else {
-            if (bitmap != null) {
-                cacheConfig.getImageCache().put(url, bitmap);
+            if (target != null) {
+                cacheConfig.getImageCache().put(url, target);
             }
         }
-        return bitmap;
+        return target;
     }
 
-    private Bitmap error(Exception e) {
+    private Target error(Exception e) {
         if (errorDrawable != 0) {
-            return BitmapFactory.decodeResource(mContext.getResources(), errorDrawable);
+            return new SourceTarget(mContext.getResources().getDrawable(errorDrawable));
         } else {
             if (callBack != null)
                 callBack.onLoadingFailed(url, imageView, new CImageException(CImageException.FailType.IO_ERROR, e));
@@ -132,17 +135,17 @@ public class BitmapWorker extends AsyncTask<String, String, Bitmap> {
     }
 
     @Override
-    protected void onPostExecute(Bitmap bitmap) {
+    protected void onPostExecute(Target target) {
         if (callBack != null)
-            callBack.onLoadingComplete(url, imageView, bitmap);
+            callBack.onLoadingComplete(url, imageView, (Bitmap) target.getTarget());
         else {
             if (disPlayer == null) {
                 CLog.e("创建显示器....");
                 disPlayer = new AnimateDisplayer();
             }
             if (ImageController.getInstance().isDisplay(imageView, url)) {
-                CLog.e("显示", "显示图片 bitmap " + url + "  " + (bitmap == null ? "空" : "不为空"));
-                disPlayer.display(imageView, bitmap);
+                CLog.e("显示", "显示图片 bitmap " + url + "  " + (target == null ? "空" : "不为空"));
+                disPlayer.display(imageView, target);
             } else {
                 imageView.setImageBitmap(null);
             }

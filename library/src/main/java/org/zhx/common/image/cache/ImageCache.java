@@ -2,6 +2,8 @@ package org.zhx.common.image.cache;
 
 import android.graphics.Bitmap;
 
+import org.zhx.common.image.Target;
+
 /**
  * Created by ${zhouxue} on 17/10/4 13: 50.
  * QQ:515278502
@@ -13,14 +15,14 @@ public interface ImageCache {
      * @param url
      * @return
      */
-    public Bitmap get(String url);
+    public Target get(String url);
 
     /**
      *  缓存图片
      * @param url
-     * @param bitmap
+     * @param target
      */
-    public void put(String url, Bitmap bitmap);
+    public void put(String url, Target target);
 
     /**
      * 清除所有图片

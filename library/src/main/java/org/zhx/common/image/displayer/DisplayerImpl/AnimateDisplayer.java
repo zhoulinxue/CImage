@@ -6,6 +6,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
+import org.zhx.common.image.Target;
 import org.zhx.common.image.displayer.CImageAnimate;
 import org.zhx.common.image.displayer.DisPlayer;
 
@@ -14,7 +15,7 @@ import org.zhx.common.image.displayer.DisPlayer;
  * QQ:515278502
  */
 
-public class AnimateDisplayer implements DisPlayer,CImageAnimate{
+public class AnimateDisplayer implements DisPlayer<Bitmap>,CImageAnimate{
     /**
      * 动画持续时间
      */
@@ -27,12 +28,12 @@ public class AnimateDisplayer implements DisPlayer,CImageAnimate{
         this.durationMillis = durationMillis;
     }
     @Override
-    public void display(ImageView imageView, Bitmap bitmap) {
-        animate(imageView,bitmap,durationMillis);
+    public void display(ImageView imageView, Target<Bitmap> target) {
+        animate(imageView,target,durationMillis);
     }
 
     @Override
-    public void animate(final ImageView imageView,final Bitmap bitmap ,int durationMillis) {
+    public void animate(final ImageView imageView,final Target target ,int durationMillis) {
         if (imageView != null) {
             AlphaAnimation fadeImage = new AlphaAnimation(0, 1);
             fadeImage.setDuration(durationMillis);
@@ -41,7 +42,7 @@ public class AnimateDisplayer implements DisPlayer,CImageAnimate{
             fadeImage.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-                    imageView.setImageBitmap(bitmap);
+                   target.bindView(imageView);
                 }
 
                 @Override
