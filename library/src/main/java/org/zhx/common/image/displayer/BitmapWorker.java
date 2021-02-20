@@ -24,7 +24,7 @@ import org.zhx.common.image.utils.CLog;
  * QQ:515278502
  */
 
-public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
+public class BitmapWorker extends AsyncTask<String, String, Bitmap> {
     private ImageView imageView;
     private String url;
     private ImageLoadCallBack callBack;
@@ -35,18 +35,18 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
 
     private ImageLoader imageLoader;
 
-    public BitmapContainer(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
+    public BitmapWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.url = url;
         this.cacheConfig = cacheConfig;
         this.imageLoader = imageLoader;
     }
 
-    public BitmapContainer(String url, CacheConfig cacheConfig) {
+    public BitmapWorker(String url, CacheConfig cacheConfig) {
         this.url = url;
         this.cacheConfig = cacheConfig;
     }
 
-    public BitmapContainer setCallBack(ImageLoadCallBack callBack) {
+    public BitmapWorker setCallBack(ImageLoadCallBack callBack) {
         this.callBack = callBack;
         return this;
     }
@@ -54,14 +54,14 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
     /**
      * 开始加载...
      */
-    public void end() {
+    public void start() {
         execute(url);
     }
 
     /**
      * 开始加载...
      */
-    public void end(String... param) {
+    public void start(String... param) {
         ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
         if (loadFromUriLock.isLocked()) {
             CLog.e("loading...wait");
@@ -83,7 +83,7 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
     }
 
     @Override
-    protected Bitmap doInBackground(String... strings) {
+    protected Bitmap doInBackground(String... params) {
         ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
         loadFromUriLock.lock();
         Bitmap bitmap = null;
@@ -158,13 +158,13 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
         mContext = imageView.getContext();
     }
 
-    public BitmapContainer setDisPlayer(DisPlayer disPlayer) {
+    public BitmapWorker setDisPlayer(DisPlayer disPlayer) {
         this.disPlayer = disPlayer;
         return this;
     }
 
-    public void smallend() {
-        end(Constant.isSmall);
+    public void smallstart() {
+        start(Constant.isSmall);
     }
 
     public void setErrorDrawable(int errorDrawable) {
@@ -175,6 +175,6 @@ public class BitmapContainer extends AsyncTask<String, String, Bitmap> {
         this.logdingDrawable = logdingDrawable;
     }
 
-    public BitmapContainer() {
+    public BitmapWorker() {
     }
 }

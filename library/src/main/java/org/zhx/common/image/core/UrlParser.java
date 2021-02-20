@@ -2,7 +2,7 @@ package org.zhx.common.image.core;
 
 import android.widget.ImageView;
 
-import org.zhx.common.image.displayer.BitmapContainer;
+import org.zhx.common.image.displayer.BitmapWorker;
 
 /**
  * Created by ${zhouxue} on 17/10/4 21: 15.
@@ -10,7 +10,7 @@ import org.zhx.common.image.displayer.BitmapContainer;
  */
 
 public interface UrlParser {
-    public BitmapContainer into(ImageView imageView);
+    public BitmapWorker into(ImageView imageView);
 
     public UrlParser error(int drawable);
 

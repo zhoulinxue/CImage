@@ -1,6 +1,5 @@
 package zhx.cimage.simple;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +51,7 @@ public class TextAdapter extends BaseAdapter {
             holder.imageView=view.findViewById(R.id.text_img);
         }
 
-        CImage.load(mList[i]).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).into(holder.imageView).setDisPlayer(new AnimateDisplayer(300)).smallend();
+        CImage.load(mList[i]).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).into(holder.imageView).setDisPlayer(new AnimateDisplayer(300)).start();
         return view;
     }
     public class ViewHolder{

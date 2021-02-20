@@ -4,7 +4,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import org.zhx.common.image.cache.CacheConfig;
-import org.zhx.common.image.displayer.BitmapContainer;
+import org.zhx.common.image.displayer.BitmapWorker;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.utils.CLog;
 
@@ -16,7 +16,7 @@ import org.zhx.common.image.utils.CLog;
 public class BaseUrlParser implements UrlParser {
     private String url;
     private CacheConfig cacheConfig;
-    private BitmapContainer container;
+    private BitmapWorker container;
     private int logdingDrawable,errorDrawable;
     private ImageLoader imageLoader;
 
@@ -30,11 +30,11 @@ public class BaseUrlParser implements UrlParser {
     public BaseUrlParser(String url, CacheConfig cacheConfig,ImageLoader imageLoader) {
         this.url = url;
         this.cacheConfig = cacheConfig;
-        this.container=new BitmapContainer(url,cacheConfig,imageLoader);
+        this.container=new BitmapWorker(url,cacheConfig,imageLoader);
     }
 
     @Override
-    public BitmapContainer into(@Nullable ImageView imageView) {
+    public BitmapWorker into(@Nullable ImageView imageView) {
         if(imageView==null){
             CLog.e("image can not be null");
             throw new NullPointerException("imageView can not be null");
