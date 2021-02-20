@@ -108,6 +108,9 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
 
     @Override
     public void onLoadingStarted(String imageUri) {
+        if (imageView != null && logdingDrawable != 0) {
+            imageView.setImageResource(logdingDrawable);
+        }
         if (mCallBack != null) {
             mCallBack.onLoadingStarted(imageUri);
         }
@@ -148,6 +151,9 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
 
     @Override
     public void onLoadingErrorDrawable() {
+        if (imageView != null && errorDrawable != 0) {
+            imageView.setImageResource(errorDrawable);
+        }
         if (mCallBack != null) {
             mCallBack.onLoadingErrorDrawable();
         }
