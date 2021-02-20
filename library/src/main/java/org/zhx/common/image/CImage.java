@@ -3,6 +3,7 @@ package org.zhx.common.image;
 import android.content.Context;
 
 import org.zhx.common.image.cache.CacheConfig;
+import org.zhx.common.image.callback.ImageLoadCallBack;
 import org.zhx.common.image.core.BaseWorker;
 import org.zhx.common.image.core.Worker;
 import org.zhx.common.image.loader.ImageLoader;
@@ -71,6 +72,18 @@ public class CImage {
             hashMap.put(url, parser);
         }
         return parser;
+    }
+
+    public static void loadWithCallBack(String url, ImageLoadCallBack callBack) {
+        if (mCacheConfig == null) {
+            throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
+        }
+        Worker parser = hashMap.get(url);
+        if (parser == null) {
+            parser = new BaseWorker(url, mCacheConfig, imageLoader);
+            hashMap.put(url, parser);
+        }
+        parser.setCallback(callBack);
     }
 
     private static Map<String, Worker> hashMap = new ConcurrentHashMap();

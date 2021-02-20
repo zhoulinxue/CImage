@@ -7,13 +7,19 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
+import org.zhx.common.image.Target;
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.callback.ImageLoadCallBack;
+import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
 import org.zhx.common.image.displayer.DownLoadWorker;
 import org.zhx.common.image.displayer.DisPlayer;
+import org.zhx.common.image.displayer.ImageController;
 import org.zhx.common.image.exception.CImageException;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.utils.CLog;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by ${zhouxue} on 17/10/4 21: 17.
@@ -23,10 +29,11 @@ import org.zhx.common.image.utils.CLog;
 public class BaseWorker implements Worker, ImageLoadCallBack {
     private String url;
     private CacheConfig cacheConfig;
-    private DownLoadWorker container;
     private int logdingDrawable, errorDrawable;
     private DisPlayer disPlayer;
     private ImageLoadCallBack mCallBack;
+    private ImageLoader imageLoader;
+    private ImageView imageView;
 
     public BaseWorker(String url, CacheConfig cacheConfig, int logdingDrawable, int errorDrawable) {
         this.url = url;
@@ -38,8 +45,7 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     public BaseWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.url = url;
         this.cacheConfig = cacheConfig;
-        this.container = new DownLoadWorker(url, cacheConfig, imageLoader);
-        this.container.setCallBack(this);
+        this.imageLoader = imageLoader;
     }
 
     public void setCallBack(ImageLoadCallBack mCallBack) {
@@ -48,19 +54,30 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
 
     @Override
     public void into(@Nullable ImageView imageView) {
+        this.imageView = imageView;
+        ImageController.getInstance().cache(url, imageView);
         if (imageView == null) {
             CLog.e("image can not be null");
             throw new NullPointerException("imageView can not be null");
         }
-        container.setImageView(imageView);
-        if (logdingDrawable != 0) {
-            container.setLogdingDrawable(logdingDrawable);
+        DownLoadWorker worker = new DownLoadWorker(url, cacheConfig, imageLoader);
+        worker.setCallBack(this);
+        if (!hasLoaded(imageView, url))
+            worker.start();
+    }
+
+    private static Map<String, String> hashMap = new ConcurrentHashMap();
+
+    private boolean hasLoaded(ImageView imageView, String url) {
+        if (imageView == null) {
+            return true;
         }
-        if (errorDrawable != 0) {
-            container.setErrorDrawable(errorDrawable);
+        String code = imageView.hashCode() + url;
+        if (hashMap.get(imageView.hashCode() + url) != null) {
+            return true;
         }
-        container.setDisPlayer(disPlayer);
-        container.start();
+        hashMap.put(code, url);
+        return false;
     }
 
     @Override
@@ -82,31 +99,57 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     }
 
     @Override
-    public void onLoadingStarted(String imageUri, ImageView view) {
+    public void setCallback(ImageLoadCallBack callback) {
+        this.mCallBack = callback;
+        DownLoadWorker worker = new DownLoadWorker(url, cacheConfig, imageLoader);
+        worker.setCallBack(mCallBack);
+        worker.start();
+    }
+
+    @Override
+    public void onLoadingStarted(String imageUri) {
         if (mCallBack != null) {
-            mCallBack.onLoadingStarted(imageUri, view);
+            mCallBack.onLoadingStarted(imageUri);
         }
     }
 
     @Override
-    public void onLoadingFailed(String imageUri, View view, CImageException failReason) {
+    public void onLoadingFailed(String imageUri, CImageException failReason) {
         if (mCallBack != null) {
-            mCallBack.onLoadingFailed(imageUri, view, failReason);
+            mCallBack.onLoadingFailed(imageUri, failReason);
         }
     }
 
     @Override
-    public void onLoadingComplete(String imageUri, ImageView view, Bitmap loadedImage) {
+    public void onLoadingComplete(String imageUri, Target target) {
         if (mCallBack != null) {
-            mCallBack.onLoadingComplete(imageUri, view, loadedImage);
+            mCallBack.onLoadingComplete(imageUri, target);
+        } else {
+            if (disPlayer == null) {
+                CLog.e("创建显示器....");
+                disPlayer = new AnimateDisplayer();
+            }
+            CLog.e("显示", "显示图片 bitmap " + url + "  " + (target == null ? "空" : "不为空"));
+            if (ImageController.getInstance().isDisplay(imageView, url)) {
+                disPlayer.display(imageView, target);
+            } else {
+                imageView.setImageBitmap(null);
+            }
         }
     }
 
 
     @Override
-    public void onLoadingCancelled(String imageUri, View view) {
+    public void onLoadingCancelled(String imageUri) {
         if (mCallBack != null) {
-            mCallBack.onLoadingCancelled(imageUri, view);
+            mCallBack.onLoadingCancelled(imageUri);
+        }
+    }
+
+    @Override
+    public void onLoadingErrorDrawable() {
+        if (mCallBack != null) {
+            mCallBack.onLoadingErrorDrawable();
         }
     }
 }

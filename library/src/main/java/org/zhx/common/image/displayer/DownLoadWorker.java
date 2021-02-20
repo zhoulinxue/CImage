@@ -8,6 +8,8 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.zhx.common.image.Constant;
@@ -20,6 +22,7 @@ import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
 import org.zhx.common.image.exception.CImageException;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.loader.http.BaseImageDownloader;
+import org.zhx.common.image.targets.SrcTarget;
 import org.zhx.common.image.utils.CLog;
 import org.zhx.common.image.utils.IoUtils;
 
@@ -29,15 +32,12 @@ import org.zhx.common.image.utils.IoUtils;
  */
 
 public class DownLoadWorker extends AsyncTask<String, String, Target> {
-    private ImageView imageView;
     private String url;
     private ImageLoadCallBack callBack;
     private Context mContext;
-    private DisPlayer disPlayer;
     private CacheConfig cacheConfig;
-    private int logdingDrawable, errorDrawable;
-
     private ImageLoader imageLoader;
+
 
     public DownLoadWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.url = url;
@@ -62,35 +62,19 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
         execute(url);
     }
 
-    /**
-     * 开始加载...
-     */
-    public void start(String... param) {
-        ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
-        if (loadFromUriLock.isLocked()) {
-            CLog.e("loading...wait");
-        }
-        execute(url, param[0]);
-    }
-
-
     @Override
     protected void onPreExecute() {
-        super.onPreExecute();
-        if (logdingDrawable != 0) {
-            imageView.setImageResource(logdingDrawable);
-        }
-        if (callBack != null)
-            callBack.onLoadingStarted(url, imageView);
+        callBack.onLoadingStarted(url);
     }
+
+    boolean error = false;
 
     @Override
     protected Target doInBackground(String... params) {
-        ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url, imageView);
+        ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url);
         loadFromUriLock.lock();
         Target target = null;
-        boolean error = false;
-        InputStream stream=null;
+        InputStream stream = null;
         try {
             target = cacheConfig.getImageCache().get(url);
             if (target != null) {
@@ -100,7 +84,7 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
                 if (imageLoader == null) {
                     imageLoader = new BaseImageDownloader(mContext);
                 }
-                 stream= imageLoader.getStream(url, null);
+                stream = imageLoader.getStream(url, null);
                 if (stream != null) {
                     target = new BitmapTarget(BitmapFactory.decodeStream(stream));
                 } else {
@@ -109,73 +93,24 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return error(e);
+            error = true;
         } finally {
             IoUtils.closeSilently(stream);
             loadFromUriLock.unlock();
         }
-        if (error) {
-            return error(new Exception("Loading error"));
-        } else {
-            if (target != null) {
-                cacheConfig.getImageCache().put(url, target);
-            }
+        if (target != null && !error) {
+            cacheConfig.getImageCache().put(url, target);
         }
         return target;
     }
 
-    private Target error(Exception e) {
-        if (errorDrawable != 0) {
-            return new SourceTarget(mContext.getResources().getDrawable(errorDrawable));
-        } else {
-            if (callBack != null)
-                callBack.onLoadingFailed(url, imageView, new CImageException(CImageException.FailType.IO_ERROR, e));
-        }
-        return null;
-    }
-
     @Override
     protected void onPostExecute(Target target) {
-        if (callBack != null)
-            callBack.onLoadingComplete(url, imageView, (Bitmap) target.getTarget());
+        if (target != null)
+            callBack.onLoadingComplete(url, target);
         else {
-            if (disPlayer == null) {
-                CLog.e("创建显示器....");
-                disPlayer = new AnimateDisplayer();
-            }
-            if (ImageController.getInstance().isDisplay(imageView, url)) {
-                CLog.e("显示", "显示图片 bitmap " + url + "  " + (target == null ? "空" : "不为空"));
-                disPlayer.display(imageView, target);
-            } else {
-                imageView.setImageBitmap(null);
-            }
+            callBack.onLoadingErrorDrawable();
         }
-    }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-        mContext = imageView.getContext();
-    }
-
-    public DownLoadWorker setDisPlayer(DisPlayer disPlayer) {
-        this.disPlayer = disPlayer;
-        return this;
-    }
-
-    public void smallstart() {
-        start(Constant.isSmall);
-    }
-
-    public void setErrorDrawable(int errorDrawable) {
-        this.errorDrawable = errorDrawable;
-    }
-
-    public void setLogdingDrawable(int logdingDrawable) {
-        this.logdingDrawable = logdingDrawable;
     }
 
     public DownLoadWorker() {

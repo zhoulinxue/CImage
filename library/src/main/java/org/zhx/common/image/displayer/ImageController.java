@@ -15,28 +15,34 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ImageController {
     private static ImageController minstance;
-    public static  ImageController getInstance(){
-        if(minstance==null){
-            minstance=new ImageController();
+
+    public static ImageController getInstance() {
+        if (minstance == null) {
+            minstance = new ImageController();
         }
         return minstance;
     }
+
     private final Map<String, ReentrantLock> uriLocks = new WeakHashMap<String, ReentrantLock>();
     private final Map<Integer, String> cacheKeysForImageAwares = Collections
             .synchronizedMap(new HashMap<Integer, String>());
-   public ReentrantLock  preperToLoadUrl(String url, ImageView imageView){
-       ReentrantLock loadFromUriLock=uriLocks.get(url);
-       if(loadFromUriLock==null){
-           loadFromUriLock=new ReentrantLock();
-           uriLocks.put(url,loadFromUriLock);
-       }
-       cacheKeysForImageAwares.put(imageView.hashCode(),url);
-       imageView.setTag(url);
-      return  loadFromUriLock;
-   }
+
+    public ReentrantLock preperToLoadUrl(String url) {
+        ReentrantLock loadFromUriLock = uriLocks.get(url);
+        if (loadFromUriLock == null) {
+            loadFromUriLock = new ReentrantLock();
+            uriLocks.put(url, loadFromUriLock);
+        }
+        return loadFromUriLock;
+    }
+
+    public void cache(String url, ImageView imageView) {
+        cacheKeysForImageAwares.put(imageView.hashCode(), url);
+        imageView.setTag(url);
+    }
 
     public boolean isDisplay(ImageView imageView, String url) {
-       String valus=cacheKeysForImageAwares.get(imageView.hashCode());
-       return url.equals(valus);
+        String valus = cacheKeysForImageAwares.get(imageView.hashCode());
+        return url.equals(valus);
     }
 }

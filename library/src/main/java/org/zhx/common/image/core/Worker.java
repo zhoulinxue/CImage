@@ -2,6 +2,7 @@ package org.zhx.common.image.core;
 
 import android.widget.ImageView;
 
+import org.zhx.common.image.callback.ImageLoadCallBack;
 import org.zhx.common.image.displayer.DisPlayer;
 
 /**
@@ -17,5 +18,7 @@ public interface Worker {
     public Worker loading(int drawable);
 
     public Worker setDisPlayer(DisPlayer disPlayer);
+
+    public void setCallback(ImageLoadCallBack callback);
 
 }
