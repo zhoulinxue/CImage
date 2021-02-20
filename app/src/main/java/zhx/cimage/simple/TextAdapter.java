@@ -54,10 +54,10 @@ public class TextAdapter extends BaseAdapter {
             holder.imageView = view.findViewById(R.id.text_img);
         }
         //带回调 加载
-//        final ViewHolder finalHolder = holder;
+        final ViewHolder finalHolder = holder;
 //        CImage.loadWithCallBack(mList[i], new BitmapCallback(holder.imageView.getContext()) {
 //            @Override
-//            protected void onComplete(boolean isSuc, String imageUri, ImageView view, Bitmap bitmap) {
+//            protected void onComplete(boolean isSuc, String imageUri, Bitmap bitmap) {
 //                finalHolder.imageView.setImageBitmap(bitmap);
 //            }
 //        });
