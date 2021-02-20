@@ -1,11 +1,10 @@
 package org.zhx.common.image;
 
-import android.app.Application;
 import android.content.Context;
 
 import org.zhx.common.image.cache.CacheConfig;
-import org.zhx.common.image.core.BaseUrlParser;
-import org.zhx.common.image.core.UrlParser;
+import org.zhx.common.image.core.BaseWorker;
+import org.zhx.common.image.core.Worker;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.loader.http.BaseImageDownloader;
 import org.zhx.common.image.loader.https.CImageHostnameVerifier;
@@ -15,10 +14,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -66,18 +61,19 @@ public class CImage {
      * @param url
      * @return
      */
-    public static UrlParser load(String url) {
+    public static Worker load(String url) {
         if (mCacheConfig == null) {
             throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
         }
-        UrlParser parser = hashMap.get(url);
+        Worker parser = hashMap.get(url);
         if (parser == null) {
-            parser = new BaseUrlParser(url, mCacheConfig, imageLoader);
+            parser = new BaseWorker(url, mCacheConfig, imageLoader);
+            hashMap.put(url, parser);
         }
         return parser;
     }
 
-    private static Map<String, UrlParser> hashMap = new ConcurrentHashMap();
+    private static Map<String, Worker> hashMap = new ConcurrentHashMap();
 
     public CImage(CacheConfig cacheConfig) {
         this.mCacheConfig = cacheConfig;

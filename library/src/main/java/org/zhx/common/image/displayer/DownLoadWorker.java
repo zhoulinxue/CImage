@@ -12,8 +12,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.zhx.common.image.Constant;
 import org.zhx.common.image.Target;
-import org.zhx.common.image.bean.BitmapTarget;
-import org.zhx.common.image.bean.SourceTarget;
+import org.zhx.common.image.targets.BitmapTarget;
+import org.zhx.common.image.targets.SourceTarget;
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.callback.ImageLoadCallBack;
 import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
@@ -28,7 +28,7 @@ import org.zhx.common.image.utils.IoUtils;
  * QQ:515278502
  */
 
-public class BitmapWorker extends AsyncTask<String, String, Target> {
+public class DownLoadWorker extends AsyncTask<String, String, Target> {
     private ImageView imageView;
     private String url;
     private ImageLoadCallBack callBack;
@@ -39,18 +39,18 @@ public class BitmapWorker extends AsyncTask<String, String, Target> {
 
     private ImageLoader imageLoader;
 
-    public BitmapWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
+    public DownLoadWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.url = url;
         this.cacheConfig = cacheConfig;
         this.imageLoader = imageLoader;
     }
 
-    public BitmapWorker(String url, CacheConfig cacheConfig) {
+    public DownLoadWorker(String url, CacheConfig cacheConfig) {
         this.url = url;
         this.cacheConfig = cacheConfig;
     }
 
-    public BitmapWorker setCallBack(ImageLoadCallBack callBack) {
+    public DownLoadWorker setCallBack(ImageLoadCallBack callBack) {
         this.callBack = callBack;
         return this;
     }
@@ -161,7 +161,7 @@ public class BitmapWorker extends AsyncTask<String, String, Target> {
         mContext = imageView.getContext();
     }
 
-    public BitmapWorker setDisPlayer(DisPlayer disPlayer) {
+    public DownLoadWorker setDisPlayer(DisPlayer disPlayer) {
         this.disPlayer = disPlayer;
         return this;
     }
@@ -178,6 +178,6 @@ public class BitmapWorker extends AsyncTask<String, String, Target> {
         this.logdingDrawable = logdingDrawable;
     }
 
-    public BitmapWorker() {
+    public DownLoadWorker() {
     }
 }

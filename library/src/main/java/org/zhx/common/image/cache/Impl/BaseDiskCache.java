@@ -1,15 +1,13 @@
 package org.zhx.common.image.cache.Impl;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
 import org.zhx.common.image.Target;
-import org.zhx.common.image.bean.FileTarget;
+import org.zhx.common.image.targets.FileTarget;
 import org.zhx.common.image.cache.DiskCache;
 import org.zhx.common.image.cache.FileMaster;
 import org.zhx.common.image.utils.CLog;

@@ -1,4 +1,4 @@
-package org.zhx.common.image.bean;
+package org.zhx.common.image.targets;
 
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;

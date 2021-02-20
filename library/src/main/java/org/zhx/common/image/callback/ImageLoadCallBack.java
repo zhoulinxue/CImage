@@ -2,6 +2,7 @@ package org.zhx.common.image.callback;
 
 import android.graphics.Bitmap;
 import android.view.View;
+import android.widget.ImageView;
 
 import org.zhx.common.image.exception.CImageException;
 
@@ -18,7 +19,7 @@ public interface ImageLoadCallBack {
      * @param imageUri Loading image URI
      * @param view     View for image
      */
-    void onLoadingStarted(String imageUri, View view);
+    void onLoadingStarted(String imageUri, ImageView view);
 
     /**
      * 下载失败/called when an error was occurred during image loading
@@ -37,7 +38,7 @@ public interface ImageLoadCallBack {
      * @param view        View for image. Can be <b>null</b>.
      * @param loadedImage Bitmap of loaded and decoded image
      */
-    void onLoadingComplete(String imageUri, View view, Bitmap loadedImage);
+    void onLoadingComplete(String imageUri, ImageView view, Bitmap loadedImage);
 
     /**
      * 下载取消/Is called when image loading task was cancelled because View for image was reused in newer task

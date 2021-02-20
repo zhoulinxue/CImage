@@ -51,7 +51,7 @@ public class TextAdapter extends BaseAdapter {
             holder.imageView=view.findViewById(R.id.text_img);
         }
 
-        CImage.load(mList[i]).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).into(holder.imageView).setDisPlayer(new AnimateDisplayer(300)).start();
+        CImage.load(mList[i]).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).setDisPlayer(new AnimateDisplayer(300)).into(holder.imageView);
         return view;
     }
     public class ViewHolder{
