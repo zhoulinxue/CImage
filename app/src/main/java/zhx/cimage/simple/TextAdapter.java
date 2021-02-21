@@ -1,7 +1,6 @@
 package zhx.cimage.simple;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import org.zhx.common.image.CImage;
-import org.zhx.common.image.Target;
-import org.zhx.common.image.callback.BitmapCallback;
 import org.zhx.common.image.displayer.DisplayerImpl.AnimateDisplayer;
 
 /**
@@ -61,7 +58,7 @@ public class TextAdapter extends BaseAdapter {
 //                finalHolder.imageView.setImageBitmap(bitmap);
 //            }
 //        });
-        CImage.load(mList[i]).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).setDisPlayer(new AnimateDisplayer(300)).into(holder.imageView);
+        CImage.with(holder.imageView).error(R.mipmap.ic_error).loading(R.mipmap.ic_stub).setDisPlayer(new AnimateDisplayer(300)).from(mList[i]);
         return view;
     }
 

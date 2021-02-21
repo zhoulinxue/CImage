@@ -45,11 +45,6 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
         this.imageLoader = imageLoader;
     }
 
-    public DownLoadWorker(String url, CacheConfig cacheConfig) {
-        this.url = url;
-        this.cacheConfig = cacheConfig;
-    }
-
     public DownLoadWorker setCallBack(ImageLoadCallBack callBack) {
         this.callBack = callBack;
         return this;
@@ -76,20 +71,15 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
         Target target = null;
         InputStream stream = null;
         try {
-            target = cacheConfig.getImageCache().get(url);
-            if (target != null) {
-                return target;
+            CLog.e("本地无缓存文件....从网络下载图片..." + url);
+            if (imageLoader == null) {
+                imageLoader = new BaseImageDownloader(mContext);
+            }
+            stream = imageLoader.getStream(url, null);
+            if (stream != null) {
+                target = new BitmapTarget(BitmapFactory.decodeStream(stream));
             } else {
-                CLog.e("本地无缓存文件....从网络下载图片..." + url);
-                if (imageLoader == null) {
-                    imageLoader = new BaseImageDownloader(mContext);
-                }
-                stream = imageLoader.getStream(url, null);
-                if (stream != null) {
-                    target = new BitmapTarget(BitmapFactory.decodeStream(stream));
-                } else {
-                    error = true;
-                }
+                error = true;
             }
         } catch (IOException e) {
             e.printStackTrace();

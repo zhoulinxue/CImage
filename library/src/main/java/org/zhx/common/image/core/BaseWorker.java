@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -15,6 +16,7 @@ import org.zhx.common.image.displayer.DownLoadWorker;
 import org.zhx.common.image.displayer.DisPlayer;
 import org.zhx.common.image.displayer.ImageController;
 import org.zhx.common.image.exception.CImageException;
+import org.zhx.common.image.io.DataType;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.utils.CLog;
 
@@ -27,23 +29,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class BaseWorker implements Worker, ImageLoadCallBack {
-    private String url;
     private CacheConfig cacheConfig;
     private int logdingDrawable, errorDrawable;
     private DisPlayer disPlayer;
     private ImageLoadCallBack mCallBack;
     private ImageLoader imageLoader;
     private ImageView imageView;
+    private Map<String, Long> times = new ConcurrentHashMap<>();
 
-    public BaseWorker(String url, CacheConfig cacheConfig, int logdingDrawable, int errorDrawable) {
-        this.url = url;
-        this.cacheConfig = cacheConfig;
-        this.logdingDrawable = logdingDrawable;
-        this.errorDrawable = errorDrawable;
-    }
-
-    public BaseWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
-        this.url = url;
+    public BaseWorker(ImageView imageView, CacheConfig cacheConfig, ImageLoader imageLoader) {
+        this.imageView = imageView;
         this.cacheConfig = cacheConfig;
         this.imageLoader = imageLoader;
     }
@@ -53,31 +48,26 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     }
 
     @Override
-    public void into(@Nullable ImageView imageView) {
-        this.imageView = imageView;
+    public void from(String url) {
         ImageController.getInstance().cache(url, imageView);
-        if (imageView == null) {
-            CLog.e("image can not be null");
-            throw new NullPointerException("imageView can not be null");
+        Target target = cacheConfig.getImageCache().get(url);
+        if (target == null) {
+            if (!isLoading(url)) {
+                DownLoadWorker worker = new DownLoadWorker(url, cacheConfig, imageLoader);
+                worker.setCallBack(this);
+                worker.start();
+                times.put(url, System.currentTimeMillis());
+            }
+        } else {
+            onLoadingComplete(url, target);
         }
-        DownLoadWorker worker = new DownLoadWorker(url, cacheConfig, imageLoader);
-        worker.setCallBack(this);
-        if (!hasLoaded(imageView, url))
-            worker.start();
     }
 
-    private static Map<String, String> hashMap = new ConcurrentHashMap();
-
-    private boolean hasLoaded(ImageView imageView, String url) {
-        if (imageView == null) {
-            return true;
+    private boolean isLoading(String url) {
+        if (times.get(url) == null) {
+            return false;
         }
-        String code = imageView.hashCode() + url;
-        if (hashMap.get(imageView.hashCode() + url) != null) {
-            return true;
-        }
-        hashMap.put(code, url);
-        return false;
+        return System.currentTimeMillis() - times.get(url) < 2000;
     }
 
     @Override
@@ -101,9 +91,7 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     @Override
     public void setCallback(ImageLoadCallBack callback) {
         this.mCallBack = callback;
-        DownLoadWorker worker = new DownLoadWorker(url, cacheConfig, imageLoader);
-        worker.setCallBack(mCallBack);
-        worker.start();
+
     }
 
     @Override
@@ -132,8 +120,8 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
                 CLog.e("创建显示器....");
                 disPlayer = new AnimateDisplayer();
             }
-            CLog.e("显示", "显示图片 bitmap " + url + "  " + (target == null ? "空" : "不为空"));
-            if (ImageController.getInstance().isDisplay(imageView, url)) {
+            CLog.e("显示", "显示图片 bitmap " + imageUri + "  " + (target.getType() + "显示成功"));
+            if (ImageController.getInstance().isDisplay(imageView, imageUri)) {
                 disPlayer.display(imageView, target);
             } else {
                 imageView.setImageBitmap(null);

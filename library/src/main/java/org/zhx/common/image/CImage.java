@@ -1,6 +1,7 @@
 package org.zhx.common.image;
 
 import android.content.Context;
+import android.widget.ImageView;
 
 import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.callback.ImageLoadCallBack;
@@ -56,37 +57,24 @@ public class CImage {
         return mCImage;
     }
 
-    /**
-     * 下载界面
-     *
-     * @param url
-     * @return
-     */
-    public static Worker load(String url) {
+    public static Worker with(ImageView imageView) {
         if (mCacheConfig == null) {
             throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
         }
-        Worker parser = hashMap.get(url);
-        if (parser == null) {
-            parser = new BaseWorker(url, mCacheConfig, imageLoader);
-            hashMap.put(url, parser);
+        Worker worker = null;
+        if (imageView != null) {
+            worker = hashMap.get(imageView.hashCode());
+            if (worker == null) {
+                worker = new BaseWorker(imageView, mCacheConfig, imageLoader);
+            }
+            hashMap.put(imageView.hashCode(), worker);
+        } else {
+            throw new NullPointerException("ImageView can not be null");
         }
-        return parser;
+        return worker;
     }
 
-    public static void loadWithCallBack(String url, ImageLoadCallBack callBack) {
-        if (mCacheConfig == null) {
-            throw new IllegalStateException("call CImage.Init(CacheConfig cacheConfig) first");
-        }
-        Worker parser = hashMap.get(url);
-        if (parser == null) {
-            parser = new BaseWorker(url, mCacheConfig, imageLoader);
-            hashMap.put(url, parser);
-        }
-        parser.setCallback(callBack);
-    }
-
-    private static Map<String, Worker> hashMap = new ConcurrentHashMap();
+    private static Map<Integer, Worker> hashMap = new ConcurrentHashMap();
 
     public CImage(CacheConfig cacheConfig) {
         this.mCacheConfig = cacheConfig;

@@ -11,7 +11,7 @@ import org.zhx.common.image.displayer.DisPlayer;
  */
 
 public interface Worker {
-    public void into(ImageView imageView);
+    public void from(String url);
 
     public Worker error(int drawable);
 

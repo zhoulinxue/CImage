@@ -2,10 +2,13 @@ package org.zhx.common.image.displayer;
 
 import android.widget.ImageView;
 
+import org.zhx.common.image.core.Worker;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -26,6 +29,7 @@ public class ImageController {
     private final Map<String, ReentrantLock> uriLocks = new WeakHashMap<String, ReentrantLock>();
     private final Map<Integer, String> cacheKeysForImageAwares = Collections
             .synchronizedMap(new HashMap<Integer, String>());
+    private static Map<String, DownLoadWorker> hashMap = new ConcurrentHashMap();
 
     public ReentrantLock preperToLoadUrl(String url) {
         ReentrantLock loadFromUriLock = uriLocks.get(url);
@@ -44,5 +48,13 @@ public class ImageController {
     public boolean isDisplay(ImageView imageView, String url) {
         String valus = cacheKeysForImageAwares.get(imageView.hashCode());
         return url.equals(valus);
+    }
+
+    public DownLoadWorker getDownLoadWorker(String url) {
+        return hashMap.get(url);
+    }
+
+    public void putDownLoadWorker(String url, DownLoadWorker worker) {
+        hashMap.put(url, worker);
     }
 }
