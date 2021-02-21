@@ -99,7 +99,7 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
         if (target != null)
             callBack.onLoadingComplete(url, target);
         else {
-            callBack.onLoadingErrorDrawable();
+            callBack.onLoadingErrorDrawable(url);
         }
     }
 

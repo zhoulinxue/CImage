@@ -7,6 +7,7 @@ import org.zhx.common.image.cache.CacheConfig;
 import org.zhx.common.image.callback.ImageLoadCallBack;
 import org.zhx.common.image.core.BaseWorker;
 import org.zhx.common.image.core.Worker;
+import org.zhx.common.image.displayer.DownLoadWorker;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.loader.http.BaseImageDownloader;
 import org.zhx.common.image.loader.https.CImageHostnameVerifier;
@@ -63,18 +64,38 @@ public class CImage {
         }
         Worker worker = null;
         if (imageView != null) {
-            worker = hashMap.get(imageView.hashCode());
-            if (worker == null) {
-                worker = new BaseWorker(imageView, mCacheConfig, imageLoader);
+            worker = workerMap.get(imageView.hashCode());
+            if (worker != null) {
+                worker.cancel();
             }
-            hashMap.put(imageView.hashCode(), worker);
+            worker = new BaseWorker(imageView, mCacheConfig, imageLoader);
+            workerMap.put(imageView.hashCode(), worker);
         } else {
             throw new NullPointerException("ImageView can not be null");
         }
         return worker;
     }
 
-    private static Map<Integer, Worker> hashMap = new ConcurrentHashMap();
+    public static void loadWithCallBack(String url, ImageLoadCallBack callBack) {
+        Target target = mCacheConfig.getImageCache().get(url);
+        if (target != null) {
+            if (callBack != null) {
+                callBack.onLoadingComplete(url, target);
+                return;
+            }
+        }
+        DownLoadWorker worker = loaderMap.get(url);
+        if (worker != null) {
+            worker.cancel(true);
+        }
+        worker = new DownLoadWorker(url, mCacheConfig, imageLoader);
+        loaderMap.put(url, worker);
+        worker.setCallBack(callBack);
+        worker.start();
+    }
+
+    private static Map<Integer, Worker> workerMap = new ConcurrentHashMap();
+    private static Map<String, DownLoadWorker> loaderMap = new ConcurrentHashMap();
 
     public CImage(CacheConfig cacheConfig) {
         this.mCacheConfig = cacheConfig;

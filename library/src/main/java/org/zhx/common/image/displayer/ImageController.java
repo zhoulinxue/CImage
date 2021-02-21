@@ -1,8 +1,11 @@
 package org.zhx.common.image.displayer;
 
+import android.util.Log;
 import android.widget.ImageView;
 
+import org.zhx.common.image.CImage;
 import org.zhx.common.image.core.Worker;
+import org.zhx.common.image.utils.CLog;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,11 +44,13 @@ public class ImageController {
     }
 
     public void cache(String url, ImageView imageView) {
+        CLog.e("匹配緩存" + imageView.hashCode() + "!!!!" + url);
         cacheKeysForImageAwares.put(imageView.hashCode(), url);
         imageView.setTag(url);
     }
 
     public boolean isDisplay(ImageView imageView, String url) {
+        CLog.e("匹配" + imageView.hashCode() + "!!!!" + url);
         String valus = cacheKeysForImageAwares.get(imageView.hashCode());
         return url.equals(valus);
     }

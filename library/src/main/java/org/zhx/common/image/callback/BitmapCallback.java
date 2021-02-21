@@ -60,7 +60,7 @@ public abstract class BitmapCallback implements ImageLoadCallBack {
     }
 
     @Override
-    public void onLoadingErrorDrawable() {
+    public void onLoadingErrorDrawable(String url) {
 
     }
 }

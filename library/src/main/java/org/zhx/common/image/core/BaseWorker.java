@@ -1,6 +1,7 @@
 package org.zhx.common.image.core;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     private ImageLoader imageLoader;
     private ImageView imageView;
     private Map<String, Long> times = new ConcurrentHashMap<>();
+    DownLoadWorker worker;
 
     public BaseWorker(ImageView imageView, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.imageView = imageView;
@@ -53,7 +55,7 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
         Target target = cacheConfig.getImageCache().get(url);
         if (target == null) {
             if (!isLoading(url)) {
-                DownLoadWorker worker = new DownLoadWorker(url, cacheConfig, imageLoader);
+                worker = new DownLoadWorker(url, cacheConfig, imageLoader);
                 worker.setCallBack(this);
                 worker.start();
                 times.put(url, System.currentTimeMillis());
@@ -95,6 +97,13 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     }
 
     @Override
+    public void cancel() {
+        if (worker != null) {
+            worker.cancel(true);
+        }
+    }
+
+    @Override
     public void onLoadingStarted(String imageUri) {
         if (imageView != null && logdingDrawable != 0) {
             imageView.setImageResource(logdingDrawable);
@@ -120,11 +129,11 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
                 CLog.e("创建显示器....");
                 disPlayer = new AnimateDisplayer();
             }
-            CLog.e("显示", "显示图片 bitmap " + imageUri + "  " + (target.getType() + "显示成功"));
             if (ImageController.getInstance().isDisplay(imageView, imageUri)) {
+                CLog.e("显示图片 bitmap " + imageUri + "  " + (target.getType() + "显示成功"));
                 disPlayer.display(imageView, target);
             } else {
-                imageView.setImageBitmap(null);
+                CLog.e("显示失败");
             }
         }
     }
@@ -138,12 +147,14 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     }
 
     @Override
-    public void onLoadingErrorDrawable() {
-        if (imageView != null && errorDrawable != 0) {
-            imageView.setImageResource(errorDrawable);
-        }
+    public void onLoadingErrorDrawable(String url) {
+        CLog.e("onLoadingErrorDrawable: " + url + "  @@" + (imageView != null) + "  !!!" + (errorDrawable != 0) + "!@#" + (mCallBack != null));
         if (mCallBack != null) {
-            mCallBack.onLoadingErrorDrawable();
+            mCallBack.onLoadingErrorDrawable(url);
+        }
+        if (imageView != null && errorDrawable != 0) {
+            if (ImageController.getInstance().isDisplay(imageView, url))
+                imageView.setImageResource(errorDrawable);
         }
     }
 }

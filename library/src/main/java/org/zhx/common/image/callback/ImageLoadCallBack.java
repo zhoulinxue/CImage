@@ -45,5 +45,5 @@ public interface ImageLoadCallBack {
      */
     void onLoadingCancelled(String imageUri);
 
-    void onLoadingErrorDrawable();
+    void onLoadingErrorDrawable(String imageUri);
 }

@@ -21,4 +21,5 @@ public interface Worker {
 
     public void setCallback(ImageLoadCallBack callback);
 
+    void cancel();
 }
