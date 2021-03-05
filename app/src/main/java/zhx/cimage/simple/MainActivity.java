@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import org.zhx.common.image.CImage;
-import org.zhx.common.image.loader.http.BaseImageDownloader;
+
+import leakcanary.AppWatcher;
 
 public class MainActivity extends AppCompatActivity {
     private ListView mListView;
@@ -42,4 +43,10 @@ public class MainActivity extends AppCompatActivity {
             "http://mpic.tiankong.com/05a/fda/05afdae70cf4dcf046ac9ddae51db8e4/640.jpg",
             "http://5b0988e595225.cdn.sohucs.com/images/20181209/b3ef180a8e2b452bab60a198dd354617.jpeg",
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppWatcher.INSTANCE.getObjectWatcher().expectWeaklyReachable(this, getClass().getSimpleName()+"has watached");
+    }
 }

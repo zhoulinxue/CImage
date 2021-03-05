@@ -6,6 +6,7 @@
         android:id="@+id/text_img"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:text="Hello World!" />
+        android:text="Hello World!"
+        android:src="@mipmap/ic_stub"/>
 
 </LinearLayout>

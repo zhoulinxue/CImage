@@ -1,13 +1,6 @@
 package org.zhx.common.image.core;
 
-import android.graphics.Bitmap;
-import android.util.Log;
-import android.view.View;
-import android.webkit.DownloadListener;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 
 import org.zhx.common.image.Target;
 import org.zhx.common.image.cache.CacheConfig;
@@ -17,7 +10,6 @@ import org.zhx.common.image.displayer.DownLoadWorker;
 import org.zhx.common.image.displayer.DisPlayer;
 import org.zhx.common.image.displayer.ImageController;
 import org.zhx.common.image.exception.CImageException;
-import org.zhx.common.image.io.DataType;
 import org.zhx.common.image.loader.ImageLoader;
 import org.zhx.common.image.utils.CLog;
 
