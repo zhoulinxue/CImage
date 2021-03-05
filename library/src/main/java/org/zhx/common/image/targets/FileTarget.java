@@ -1,13 +1,16 @@
 package org.zhx.common.image.targets;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 import org.zhx.common.image.Target;
 import org.zhx.common.image.io.DataType;
+import org.zhx.common.image.utils.CLog;
 
 public class FileTarget implements Target<String> {
     private String path;
+    private Bitmap bitmap;
 
     public FileTarget(String path) {
         this.path = path;
@@ -25,6 +28,15 @@ public class FileTarget implements Target<String> {
 
     @Override
     public void bindView(ImageView imageView) {
-        imageView.setImageBitmap(BitmapFactory.decodeFile(path));
+        bitmap=BitmapFactory.decodeFile(path);
+        imageView.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void destory() {
+       if(bitmap!=null){
+           bitmap.recycle();
+           CLog.e("lifcycle","bitmap recycled...");
+       }
     }
 }

@@ -1,6 +1,7 @@
 package org.zhx.common.image.core;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.lifecycle.Lifecycle;
@@ -37,10 +38,12 @@ public class BaseWorker implements Worker, ImageLoadCallBack, LifecycleObserver 
     private Map<String, Long> times = new ConcurrentHashMap<>();
     DownLoadWorker worker;
     private LifecycleOwner owner;
-    private int state;
+    private String mUrl;
+    private String code;
 
     public BaseWorker(ImageView imageView, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.imageView = imageView;
+        this.code = imageView.hashCode() + "";
         this.cacheConfig = cacheConfig;
         this.imageLoader = imageLoader;
         Context context = imageView.getContext();
@@ -56,6 +59,7 @@ public class BaseWorker implements Worker, ImageLoadCallBack, LifecycleObserver 
 
     @Override
     public void from(String url) {
+        this.mUrl = url;
         ImageController.getInstance().cache(url, imageView);
         Target target = cacheConfig.getImageCache().get(url);
         if (target == null) {
@@ -103,7 +107,7 @@ public class BaseWorker implements Worker, ImageLoadCallBack, LifecycleObserver 
 
     @Override
     public void cancel() {
-        if (worker != null) {
+        if (worker != null && worker.getState() > 0) {
             worker.cancel(true);
         }
     }
@@ -160,6 +164,36 @@ public class BaseWorker implements Worker, ImageLoadCallBack, LifecycleObserver 
         if (imageView != null && errorDrawable != 0) {
             if (ImageController.getInstance().isDisplay(imageView, url))
                 imageView.setImageResource(errorDrawable);
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void onDestory() {
+        cancel();
+        int number = ImageController.getInstance().remove(mUrl, code);
+        if (number <= 0) {
+           Target target= cacheConfig.getImageCache().get(mUrl);
+           if(target!=null){
+               target.destory();
+           }
+        }else {
+            CLog.e("lifcycle", "links: "+number+"个 "+mUrl );
+        }
+    }
+
+    private boolean isPause = false;
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onStop() {
+        isPause = true;
+        cancel();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume() {
+        if (isPause) {
+            isPause = false;
+            from(mUrl);
         }
     }
 }

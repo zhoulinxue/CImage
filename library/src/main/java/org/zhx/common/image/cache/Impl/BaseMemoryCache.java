@@ -14,11 +14,11 @@ import org.zhx.common.image.utils.CLog;
  */
 public class BaseMemoryCache implements ImageCache {
     private int mCacheSize;
-    LruCache<String,Target> bitmapLruCache;
+    LruCache<String, Target> bitmapLruCache;
 
     public BaseMemoryCache(int mCacheSize) {
         this.mCacheSize = mCacheSize;
-        bitmapLruCache=new LruCache<String,Target>(mCacheSize);
+        bitmapLruCache = new LruCache<String, Target>(mCacheSize);
     }
 
     @Override
@@ -31,7 +31,8 @@ public class BaseMemoryCache implements ImageCache {
     @Override
     public void put(String url, Target target) {
         CLog.e("缓存到内存");
-        bitmapLruCache.put(url,target);
+        if(bitmapLruCache.get(url)==null)
+        bitmapLruCache.put(url, target);
     }
 
     @Override

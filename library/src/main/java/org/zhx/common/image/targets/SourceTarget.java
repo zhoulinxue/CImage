@@ -27,4 +27,9 @@ public class SourceTarget implements Target<Drawable> {
     public void bindView(ImageView imageView) {
         imageView.setImageDrawable(drawable);
     }
+
+    @Override
+    public void destory() {
+        drawable=null;
+    }
 }

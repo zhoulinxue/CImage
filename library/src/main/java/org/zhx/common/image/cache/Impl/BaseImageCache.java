@@ -80,6 +80,9 @@ public class BaseImageCache implements ImageCache {
         } else {
             CLog.e("内存获取成功" + url);
         }
+        if(target!=null){
+            put(url,target);
+        }
         return target;
     }
 

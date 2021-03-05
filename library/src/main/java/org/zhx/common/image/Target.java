@@ -10,4 +10,6 @@ public interface Target<T> {
     DataType getType();
 
     void bindView(ImageView imageView);
+
+    void destory();
 }

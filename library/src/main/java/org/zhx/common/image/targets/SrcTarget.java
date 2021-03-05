@@ -26,4 +26,10 @@ public class SrcTarget implements Target<Integer> {
     public void bindView(ImageView imageView) {
         imageView.setImageResource(src);
     }
+
+    @Override
+    public void destory() {
+        src = 0;
+    }
+
 }

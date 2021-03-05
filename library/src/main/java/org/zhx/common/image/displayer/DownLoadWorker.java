@@ -37,6 +37,7 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
     private Context mContext;
     private CacheConfig cacheConfig;
     private ImageLoader imageLoader;
+    private int state=-1;
 
 
     public DownLoadWorker(String url, CacheConfig cacheConfig, ImageLoader imageLoader) {
@@ -59,6 +60,7 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
 
     @Override
     protected void onPreExecute() {
+        state=0;
         callBack.onLoadingStarted(url);
     }
 
@@ -66,6 +68,7 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
 
     @Override
     protected Target doInBackground(String... params) {
+        state=1;
         ReentrantLock loadFromUriLock = ImageController.getInstance().preperToLoadUrl(url);
         loadFromUriLock.lock();
         Target target = null;
@@ -101,6 +104,11 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
         else {
             callBack.onLoadingErrorDrawable(url);
         }
+        state=-1;
+    }
+
+    public int getState() {
+        return state;
     }
 
     public DownLoadWorker() {

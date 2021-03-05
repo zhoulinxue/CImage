@@ -1,5 +1,7 @@
 package org.zhx.common.image.displayer;
+
 import android.widget.ImageView;
+
 import org.zhx.common.image.utils.CLog;
 
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ public class ImageController {
     private final Map<String, ReentrantLock> uriLocks = new WeakHashMap<String, ReentrantLock>();
     private final Map<Integer, String> cacheKeysForImageAwares = Collections
             .synchronizedMap(new HashMap<Integer, String>());
-    private final Map<String, List<Integer>> links = Collections
-            .synchronizedMap(new HashMap<String, List<Integer>>());
+    private final Map<String, List<String>> links = Collections
+            .synchronizedMap(new HashMap<String, List<String>>());
 
     public ReentrantLock preperToLoadUrl(String url) {
         ReentrantLock loadFromUriLock = uriLocks.get(url);
@@ -41,28 +43,36 @@ public class ImageController {
     }
 
     public void cache(String url, ImageView imageView) {
-        CLog.e("匹配緩存" + imageView.hashCode() + "!!!!" + url);
-        int hascode = imageView.hashCode();
-        List<Integer> sparseArray = links.get(url);
+        String hascode = imageView.hashCode()+"";
+        List<String> sparseArray = links.get(url);
         if (sparseArray == null) {
             sparseArray = new ArrayList<>();
             links.put(url, sparseArray);
         }
         if (!sparseArray.contains(hascode)) {
-            sparseArray.add(hascode);
+            sparseArray.add(hascode + "");
         }
         cacheKeysForImageAwares.put(imageView.hashCode(), url);
     }
 
     public boolean isUrlLinked(String url) {
-        List<Integer> linksView = links.get(url);
+        List<String> linksView = links.get(url);
+        CLog.e("lifcycle", "linkedSize: "+ (linksView != null?linksView.size()+"@@":"0！"));
         return linksView != null && linksView.size() != 0;
     }
 
     public boolean isDisplay(ImageView imageView, String url) {
-        CLog.e("匹配" + imageView.hashCode() + "!!!!" + url);
         String valus = cacheKeysForImageAwares.get(imageView.hashCode());
         return url.equals(valus);
     }
 
+    public int remove(String url, String hashCode) {
+        boolean islinked = isUrlLinked(url);
+        CLog.e("lifcycle", "isLinked: "+islinked);
+        if (islinked) {
+            links.get(url).remove(hashCode);
+            return links.get(url).size();
+        }
+        return 0;
+    }
 }

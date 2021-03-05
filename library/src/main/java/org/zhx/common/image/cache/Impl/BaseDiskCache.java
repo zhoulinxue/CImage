@@ -68,7 +68,7 @@ public class BaseDiskCache implements DiskCache, FileMaster {
                 try {
                     File file = new File(parents + File.separator + encodefileName(url));
                     stream = new FileOutputStream(file.getAbsolutePath());
-                    CLog.e("缓存地址"+parents + File.separator + encodefileName(url) );
+                    CLog.e("缓存地址" + parents + File.separator + encodefileName(url));
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -89,6 +89,7 @@ public class BaseDiskCache implements DiskCache, FileMaster {
             }
         }
     }
+
 
     protected String mCacheDir;
 

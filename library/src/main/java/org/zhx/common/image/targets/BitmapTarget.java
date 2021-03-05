@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import org.zhx.common.image.Target;
 import org.zhx.common.image.io.DataType;
+import org.zhx.common.image.utils.CLog;
 
 public class BitmapTarget implements Target<Bitmap> {
     private Bitmap bitmap;
@@ -26,5 +27,13 @@ public class BitmapTarget implements Target<Bitmap> {
     @Override
     public void bindView(ImageView imageView) {
         imageView.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void destory() {
+        if (bitmap != null) {
+            bitmap.recycle();
+            CLog.e("lifcycle","bitmap recycled...");
+        }
     }
 }
