@@ -1,6 +1,12 @@
 package org.zhx.common.image.core;
 
+import android.content.Context;
 import android.widget.ImageView;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import org.zhx.common.image.Target;
 import org.zhx.common.image.cache.CacheConfig;
@@ -21,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * QQ:515278502
  */
 
-public class BaseWorker implements Worker, ImageLoadCallBack {
+public class BaseWorker implements Worker, ImageLoadCallBack, LifecycleObserver {
     private CacheConfig cacheConfig;
     private int logdingDrawable, errorDrawable;
     private DisPlayer disPlayer;
@@ -30,11 +36,18 @@ public class BaseWorker implements Worker, ImageLoadCallBack {
     private ImageView imageView;
     private Map<String, Long> times = new ConcurrentHashMap<>();
     DownLoadWorker worker;
+    private LifecycleOwner owner;
+    private int state;
 
     public BaseWorker(ImageView imageView, CacheConfig cacheConfig, ImageLoader imageLoader) {
         this.imageView = imageView;
         this.cacheConfig = cacheConfig;
         this.imageLoader = imageLoader;
+        Context context = imageView.getContext();
+        if (context instanceof LifecycleOwner) {
+            this.owner = (LifecycleOwner) context;
+        }
+        owner.getLifecycle().addObserver(this);
     }
 
     public void setCallBack(ImageLoadCallBack mCallBack) {
