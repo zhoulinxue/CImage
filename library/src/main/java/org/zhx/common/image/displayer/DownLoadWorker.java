@@ -85,7 +85,6 @@ public class DownLoadWorker extends AsyncTask<String, String, Target> {
                 error = true;
             }
         } catch (IOException e) {
-            e.printStackTrace();
             error = true;
         } finally {
             IoUtils.closeSilently(stream);

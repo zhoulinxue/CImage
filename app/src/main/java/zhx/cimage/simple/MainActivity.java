@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        CImage.init(this);
         ImageView imageView = findViewById(R.id.test_img);
         ImageView imageView1=findViewById(R.id.test_img2);
         CImage.with(imageView).from("https://alifei04.cfp.cn/creative/vcg/veer/800water/veer-373217773.jpg");

@@ -34,9 +34,10 @@ public class FileTarget implements Target<String> {
 
     @Override
     public void destory() {
-       if(bitmap!=null){
-           bitmap.recycle();
-           CLog.e("lifcycle","bitmap recycled...");
-       }
+        if (bitmap != null&& !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap=null;
+            CLog.e("lifcycle","bitmap recycled...");
+        }
     }
 }

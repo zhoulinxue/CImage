@@ -31,8 +31,9 @@ public class BitmapTarget implements Target<Bitmap> {
 
     @Override
     public void destory() {
-        if (bitmap != null) {
+        if (bitmap != null&& !bitmap.isRecycled()) {
             bitmap.recycle();
+            bitmap=null;
             CLog.e("lifcycle","bitmap recycled...");
         }
     }
